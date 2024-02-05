@@ -31,3 +31,5 @@ Papp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/LoadingScreen.k
 Napp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/ErrorScreen.kt,4/5/450cf9362a218c8953765e1db733f5c04880f089
 …
 Uapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaHeader.kt,5/8/58235f08fd7079d81c299f85f53043e8f67be23d
+}
+Mapp/src/main/java/emmanuelmuturia/carizma/commons/domainlayer/CarizmaState.kt,d/9/d9f354ea0ab723465a135bb2723437bb0c5cc03f
