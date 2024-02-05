@@ -29,3 +29,5 @@ bapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaBot
 Papp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/LoadingScreen.kt,5/f/5f20d9a44dadb8acddca05bf1d4669024b317d5d
 ~
 Napp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/ErrorScreen.kt,4/5/450cf9362a218c8953765e1db733f5c04880f089
+…
+Uapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaHeader.kt,5/8/58235f08fd7079d81c299f85f53043e8f67be23d
