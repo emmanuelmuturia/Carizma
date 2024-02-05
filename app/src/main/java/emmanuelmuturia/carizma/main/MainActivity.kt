@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma
+package emmanuelmuturia.carizma.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import emmanuelmuturia.carizma.ui.theme.CarizmaTheme
+import emmanuelmuturia.carizma.theme.CarizmaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
