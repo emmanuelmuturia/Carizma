@@ -1,5 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.2.1" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.0" apply false
+    alias(notation = libs.plugins.com.android.application) apply false
+    alias(notation = libs.plugins.org.jetbrains.kotlin.android) apply false
+    alias(notation = libs.plugins.com.android.library) apply false
+    alias(notation = libs.plugins.com.google.devtools.ksp) apply false
+    alias(notation = libs.plugins.com.google.dagger.hilt.android.plugin) apply false
+    alias(notation = libs.plugins.com.google.gms.google.services) apply false
+    alias(notation = libs.plugins.com.google.firebase.crashlytics) apply false
+    alias(notation = libs.plugins.com.google.android.libraries.mapsplatform.secrets.gradle.plugin) apply false
+    alias(notation = libs.plugins.androidTest) apply false
+    alias(notation = libs.plugins.com.google.firebase.performance) apply false
 }
