@@ -1,6 +1,12 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(notation = libs.plugins.com.android.application)
+    alias(notation = libs.plugins.org.jetbrains.kotlin.android)
+    alias(notation = libs.plugins.com.google.devtools.ksp)
+    alias(notation = libs.plugins.com.google.dagger.hilt.android.plugin)
+    alias(notation = libs.plugins.com.google.gms.google.services)
+    alias(notation = libs.plugins.com.google.firebase.crashlytics)
+    alias(notation = libs.plugins.com.google.firebase.performance)
+    alias(notation = libs.plugins.com.guardsquare.appsweep)
 }
 
 android {
@@ -38,9 +44,10 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.composeCompilerVersion.get()
     }
     packaging {
         resources {
@@ -51,19 +58,48 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // Firebase...
+    implementation(dependencyNotation = platform(libs.firebase.bom))
+    implementation(dependencyNotation = libs.firebase.analytics)
+    implementation(dependencyNotation = libs.firebase.cloud.messaging)
+    implementation(dependencyNotation = libs.firebase.performance)
+    implementation(dependencyNotation = libs.firebase.appcheck.playintegrity)
+
+    // Splash Screen API...
+    implementation(dependencyNotation = libs.androidx.core.splashscreen)
+
+    // Dagger-Hilt...
+    implementation(dependencyNotation = libs.hilt.android)
+    "ksp"(dependencyNotation = libs.hilt.android.compiler)
+    implementation(dependencyNotation = libs.androidx.hilt.navigation.compose)
+
+    // Navigation...
+    implementation(dependencyNotation = libs.androidx.navigation.compose)
+
+    // App Compat...
+    implementation(dependencyNotation = libs.appcompat)
+
+    // Timber...
+    implementation(dependencyNotation = libs.timber)
+
+    // Android...
+    implementation(dependencyNotation = libs.androidx.core.ktx)
+    implementation(dependencyNotation = libs.androidx.lifecycle.runtime.ktx)
+    implementation(dependencyNotation = libs.androidx.activity.compose)
+    implementation(dependencyNotation = platform(libs.androidx.compose.bom))
+    implementation(dependencyNotation = libs.compose.ui)
+    implementation(dependencyNotation = libs.compose.ui.graphics)
+    implementation(dependencyNotation = libs.compose.ui.tooling.preview)
+    implementation(dependencyNotation = libs.material3)
+
+    // Testing...
+    testImplementation(dependencyNotation = libs.junit)
+    androidTestImplementation(dependencyNotation = libs.androidx.junit)
+    androidTestImplementation(dependencyNotation = libs.androidx.espresso.core)
+    androidTestImplementation(dependencyNotation = platform(libs.androidx.compose.bom))
+    androidTestImplementation(dependencyNotation = libs.compose.ui.test.junit4)
+    debugImplementation(dependencyNotation = libs.compose.ui.tooling)
+    debugImplementation(dependencyNotation = libs.compose.ui.test.manifest)
+    debugImplementation(dependencyNotation = libs.leakCanary)
+
 }
