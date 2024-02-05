@@ -1,7 +1,10 @@
 # Carizma
 
+![playstore](https://github.com/emmanuelmuturia/Carizma/assets/55001497/9caeef5c-fc03-4dc0-99ca-fc7e074b67b8)
+
+
 ## Overview
-Carizma is an Android app that plays car sounds in 8D. Do not be worried if it becomes something else in the near future. It will still be a car app, though :)
+Carizma is an Android app that plays car sounds in 8D. Think of it as Spotify but for cars...
 
 ## Table of Contents
 
