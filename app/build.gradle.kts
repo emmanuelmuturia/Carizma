@@ -60,6 +60,7 @@ dependencies {
 
     // Firebase...
     implementation(dependencyNotation = platform(libs.firebase.bom))
+    implementation(dependencyNotation = libs.firebase.cloud.firestore)
     implementation(dependencyNotation = libs.firebase.analytics)
     implementation(dependencyNotation = libs.firebase.cloud.messaging)
     implementation(dependencyNotation = libs.firebase.performance)

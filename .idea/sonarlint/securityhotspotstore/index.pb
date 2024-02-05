@@ -33,3 +33,9 @@ Napp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/ErrorScreen.kt
 Uapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaHeader.kt,5/8/58235f08fd7079d81c299f85f53043e8f67be23d
 }
 Mapp/src/main/java/emmanuelmuturia/carizma/commons/domainlayer/CarizmaState.kt,d/9/d9f354ea0ab723465a135bb2723437bb0c5cc03f
+t
+Dapp/src/main/java/emmanuelmuturia/carizma/main/CarizmaApplication.kt,3/0/30aa9721b6a75117020ac904969792ebf23dff5f
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
+‹
+[app/src/main/java/emmanuelmuturia/carizma/commons/dependencyinjection/FirebaseHiltModule.kt,6/e/6e43513048843722f3472f614530be3b60c79522
