@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.navigation.routes.Routes
+import emmanuelmuturia.carizma.notifications.uilayer.NotificationsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -34,7 +35,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.NotificationsScreen.route) {
-
+            NotificationsScreen()
         }
 
         composable(route = Routes.SearchScreen.route) {

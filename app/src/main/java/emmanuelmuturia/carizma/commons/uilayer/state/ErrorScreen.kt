@@ -12,9 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
+import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
 
 @Composable
-fun ErrorScreen() {
+fun ErrorScreen(navigateBack: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -27,7 +28,7 @@ fun ErrorScreen() {
             verticalArrangement = Arrangement.Center
         ) {
 
-
+            CarizmaHeader(navigateBack = navigateBack, headerTitle = "Error")
 
         }
 
