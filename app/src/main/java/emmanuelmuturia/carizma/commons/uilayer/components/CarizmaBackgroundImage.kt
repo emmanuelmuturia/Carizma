@@ -13,7 +13,7 @@ fun CarizmaBackgroundImage() {
 
     Image(
         modifier = Modifier.fillMaxSize(),
-        painter = painterResource(id = R.drawable.supercar),
+        painter = painterResource(id = R.drawable.blurred_supercar),
         contentDescription = "Background Image",
         contentScale = ContentScale.FillBounds
     )
