@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,15 @@ fun CarizmaHeader(
             )
         }
 
-        Row(modifier = Modifier.weight(weight = 1f)) {}
+        Row(modifier = Modifier.weight(weight = 1f)) {
+            IconButton(onClick = navigateBack) {
+                Icon(
+                    imageVector = Icons.Rounded.MoreVert,
+                    contentDescription = "Arrow Back",
+                    tint = Color.White
+                )
+            }
+        }
 
     }
 

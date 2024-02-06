@@ -1,6 +1,4 @@
 
-D
-app/build.gradle.kts,d/2/d2a4383452aad84a18429a5844d31330a012a9e6
 Ž
 ^app/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaBackgroundImage.kt,a/1/a12c0f710b034cd2a59888a2e97ec82625509e60
 h
