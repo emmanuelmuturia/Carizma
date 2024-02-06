@@ -81,21 +81,41 @@ dependencies {
     // App Compat...
     implementation(dependencyNotation = libs.appcompat)
 
+    // Room...
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    "ksp"(libs.room.compiler)
+
+    // Swipe To Refresh (Accompanist)...
+    implementation(dependencyNotation = libs.accompanist.swiperefresh)
+
+    // Glide...
+    implementation(dependencyNotation = libs.com.github.bumptech.glide.compose)
+
+    // ExoPlayer (Media3)...
+    implementation(dependencyNotation = libs.androidx.media3.exoplayer)
+
     // Timber...
     implementation(dependencyNotation = libs.timber)
 
     // Android...
     implementation(dependencyNotation = libs.androidx.core.ktx)
     implementation(dependencyNotation = libs.androidx.lifecycle.runtime.ktx)
+    implementation(dependencyNotation = libs.lifecycle.runtime.compose)
     implementation(dependencyNotation = libs.androidx.activity.compose)
     implementation(dependencyNotation = platform(libs.androidx.compose.bom))
     implementation(dependencyNotation = libs.compose.ui)
     implementation(dependencyNotation = libs.compose.ui.graphics)
     implementation(dependencyNotation = libs.compose.ui.tooling.preview)
+    implementation(dependencyNotation = libs.material)
     implementation(dependencyNotation = libs.material3)
 
     // Testing...
+    testImplementation(dependencyNotation = libs.robolectric)
+    testImplementation(dependencyNotation = libs.kotlinx.coroutines.test)
+    testImplementation(dependencyNotation = libs.mockK)
     testImplementation(dependencyNotation = libs.junit)
+    androidTestImplementation(dependencyNotation = libs.hilt.testing)
     androidTestImplementation(dependencyNotation = libs.androidx.junit)
     androidTestImplementation(dependencyNotation = libs.androidx.espresso.core)
     androidTestImplementation(dependencyNotation = platform(libs.androidx.compose.bom))
