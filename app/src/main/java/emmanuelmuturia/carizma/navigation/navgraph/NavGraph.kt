@@ -36,11 +36,11 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.NotificationsScreen.route) {
-            NotificationsScreen(navigateBack = { navController.popBackStack() })
+            NotificationsScreen(navController = navController)
         }
 
         composable(route = Routes.SearchScreen.route) {
-            SearchScreen()
+            //SearchScreen()
         }
 
         composable(route = Routes.SettingsScreen.route) {
@@ -48,6 +48,10 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.GarageScreen.route) {
+
+        }
+
+        composable(route = Routes.ProfileScreen.route) {
 
         }
 

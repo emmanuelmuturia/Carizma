@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -53,7 +54,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun NotificationsScreen(navigateBack: () -> Unit) {
+fun NotificationsScreen(navController: NavHostController) {
 
     val notificationsScreenViewModel: NotificationsScreenViewModel = hiltViewModel()
 
@@ -63,7 +64,7 @@ fun NotificationsScreen(navigateBack: () -> Unit) {
 
     when (notificationsState) {
 
-        is CarizmaState.Error -> ErrorScreen(navigateBack = navigateBack)
+        is CarizmaState.Error -> ErrorScreen(navigateBack = { navController.popBackStack() })
         is CarizmaState.Loading -> LoadingScreen()
         else -> Box(modifier = Modifier.fillMaxSize()) {
 
@@ -74,7 +75,7 @@ fun NotificationsScreen(navigateBack: () -> Unit) {
             ) {
 
                 CarizmaHeader(
-                    navigateBack = navigateBack,
+                    navigateBack = { navController.popBackStack() },
                     headerTitle = "Notifications"
                 )
 
