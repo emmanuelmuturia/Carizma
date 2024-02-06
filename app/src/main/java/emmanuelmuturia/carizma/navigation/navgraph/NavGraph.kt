@@ -6,9 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
+import emmanuelmuturia.carizma.home.uilayer.HomeScreen
 import emmanuelmuturia.carizma.navigation.routes.Routes
 import emmanuelmuturia.carizma.notifications.uilayer.NotificationsScreen
-import emmanuelmuturia.carizma.search.uilayer.SearchScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -24,7 +24,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.HomeScreen.route) {
-
+            HomeScreen(navController = navController)
         }
 
         composable(route = Routes.PlayerScreen.route) {
@@ -48,10 +48,6 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.GarageScreen.route) {
-
-        }
-
-        composable(route = Routes.ProfileScreen.route) {
 
         }
 

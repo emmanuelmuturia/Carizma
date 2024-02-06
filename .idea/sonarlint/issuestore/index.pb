@@ -67,3 +67,9 @@ x
 Happ/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreen.kt,0/0/0044ab09fb46127e84ea04ee4290000882d6840e
 Å
 Qapp/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreenViewModel.kt,4/7/4781f87e841595cf4718ef8ed6fbf15dac2b621c
+p
+@app/src/main/java/emmanuelmuturia/carizma/car/domainlayer/Car.kt,9/0/9084ed8dfa771aeec60ef278ddbfa225045dfdce
+t
+Dapp/src/main/java/emmanuelmuturia/carizma/home/uilayer/HomeScreen.kt,f/0/f094a5e1a5b85e9f4a7d20ac57a7aba790aa93cb
+à
+Xapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaDummyCars.kt,c/9/c9c94e80e6787e073e410eb7cbd4d44ea9c638ef
