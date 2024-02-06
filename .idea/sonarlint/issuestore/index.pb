@@ -1,14 +1,10 @@
 
-i
-9app/src/main/java/emmanuelmuturia/carizma/MainActivity.kt,9/6/9643cfdf63a86bfbe05defbf53d14056c79ec29b
 A
 gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
 @
 build.gradle.kts,d/b/dbcff70658daf80b53ce624f6adcaa529df5ed8d
 D
 app/build.gradle.kts,d/2/d2a4383452aad84a18429a5844d31330a012a9e6
-H
-gradle/libs.version.toml,c/4/c42b51b98ba0a4239a17c3903b3e1f2de89603f5
 n
 >app/src/main/java/emmanuelmuturia/carizma/main/MainActivity.kt,e/d/ed002db9ae7b4d64302c0d10a92ab1bdb1284248
 h
@@ -17,16 +13,10 @@ g
 7app/src/main/java/emmanuelmuturia/carizma/theme/Type.kt,4/0/40b40e3a35a011e46cfef0915446a143bf883026
 h
 8app/src/main/java/emmanuelmuturia/carizma/theme/Theme.kt,9/b/9bde6bcf984eaba25165245709f46cc00f014127
-ƒ
-Sapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/CarizmaBackgroundImage.kt,2/b/2be8333a0761829e7ff96f5a77f97a18c9511c72
-‡
-Wapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/CarizmaBottomNavigationBar.kt,a/c/acdca93bc82caae84231134989de32845de848ab
 Ž
 ^app/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaBackgroundImage.kt,a/1/a12c0f710b034cd2a59888a2e97ec82625509e60
 ’
 bapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaBottomNavigationBar.kt,a/8/a809fc7a06433a2cebc69cbb609d8733ff060fec
-€
-Papp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/LoadingScreen.kt,5/f/5f20d9a44dadb8acddca05bf1d4669024b317d5d
 ~
 Napp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/state/ErrorScreen.kt,4/5/450cf9362a218c8953765e1db733f5c04880f089
 …
@@ -45,3 +35,7 @@ H
 app/google-services.json,f/d/fd8d34b142d02ec743a8efefefd2c097961666e9
 9
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+u
+Eapp/src/main/java/emmanuelmuturia/carizma/navigation/routes/Routes.kt,9/1/9130e5e27c72b71c243a0a560f4a8d8934ca6272
+y
+Iapp/src/main/java/emmanuelmuturia/carizma/navigation/navgraph/NavGraph.kt,8/8/889b18be20e050833788e7dc65d83533228b8ea4
