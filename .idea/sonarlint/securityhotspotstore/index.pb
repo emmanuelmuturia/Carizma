@@ -63,3 +63,7 @@ fapp/src/main/java/emmanuelmuturia/carizma/notifications/datalayer/firebasecloud
 aapp/src/main/java/emmanuelmuturia/carizma/notifications/datalayer/handler/NotificationsHandler.kt,8/0/800525b4572abbb615247465b0451ab40dc70029
 •
 uapp/src/main/java/emmanuelmuturia/carizma/notifications/datalayer/repository/NotificationsRepositoryImplementation.kt,4/2/42579c99caa67d9067094f7852602de2baceb59f
+x
+Happ/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreen.kt,0/0/0044ab09fb46127e84ea04ee4290000882d6840e
+Å
+Qapp/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreenViewModel.kt,4/7/4781f87e841595cf4718ef8ed6fbf15dac2b621c

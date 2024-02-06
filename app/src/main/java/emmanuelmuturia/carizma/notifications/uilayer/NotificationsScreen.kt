@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +47,8 @@ import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.notifications.domainlayer.entity.NotificationEntity
+import emmanuelmuturia.carizma.theme.CarizmaLightOrange
+import emmanuelmuturia.carizma.theme.CarizmaOrange
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -111,7 +112,7 @@ private fun NotificationScreenContent() {
             SwipeRefreshIndicator(
                 state = state,
                 refreshTriggerDistance = refreshTrigger,
-                backgroundColor = Color.Transparent,
+                backgroundColor = CarizmaLightOrange,
                 contentColor = Color.White
             )
         }) {
@@ -179,8 +180,7 @@ private fun NotificationsCard(notificationEntity: NotificationEntity) {
             .fillMaxWidth()
             .padding(start = 3.dp, end = 3.dp),
         shape = RoundedCornerShape(size = 21.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        border = BorderStroke(width = 3.dp, color = Color.White)
+        colors = CardDefaults.cardColors(containerColor = CarizmaOrange)
     ) {
 
         Column(
@@ -231,7 +231,7 @@ private fun EmptyNotificationsScreen() {
             SwipeRefreshIndicator(
                 state = state,
                 refreshTriggerDistance = refreshTrigger,
-                backgroundColor = Color.Transparent,
+                backgroundColor = CarizmaLightOrange,
                 contentColor = Color.White
             )
         }) {

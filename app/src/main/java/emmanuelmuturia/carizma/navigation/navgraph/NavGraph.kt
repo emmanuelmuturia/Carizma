@@ -8,6 +8,7 @@ import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.navigation.routes.Routes
 import emmanuelmuturia.carizma.notifications.uilayer.NotificationsScreen
+import emmanuelmuturia.carizma.search.uilayer.SearchScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -15,7 +16,7 @@ fun NavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Routes.HomeScreen.route) {
 
         composable(route = Routes.ErrorScreen.route) {
-            ErrorScreen()
+            ErrorScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(route = Routes.LoadingScreen.route) {
@@ -35,11 +36,11 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.NotificationsScreen.route) {
-            NotificationsScreen()
+            NotificationsScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(route = Routes.SearchScreen.route) {
-
+            SearchScreen()
         }
 
         composable(route = Routes.SettingsScreen.route) {
