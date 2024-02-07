@@ -20,4 +20,6 @@ sealed class Routes(val route: String) {
 
     data object GarageScreen: Routes(route = "garageScreen")
 
+    data object ProfileScreen: Routes(route = "profileScreen")
+
 }
