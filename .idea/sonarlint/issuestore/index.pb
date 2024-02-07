@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 A
 gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
@@ -81,3 +82,5 @@ Happ/src/main/java/emmanuelmuturia/carizma/garage/uilayer/GarageScreen.kt,2/c/2
 Lapp/src/main/java/emmanuelmuturia/carizma/settings/uilayer/SettingsScreen.kt,d/3/d3eb90dd1f5d58cfcd33ef52304785fb8eba71eb
 z
 Japp/src/main/java/emmanuelmuturia/carizma/profile/uilayer/ProfileScreen.kt,b/4/b4b89680125917dd914b105f9c7ff38de5712416
+=======
+>>>>>>> 7cf54bdf9f00a4e8da68198cdd2001750e6fe7e0
