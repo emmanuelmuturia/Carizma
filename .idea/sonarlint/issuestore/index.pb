@@ -45,8 +45,6 @@ Vapp/src/main/java/emmanuelmuturia/carizma/notifications/uilayer/NotificationsSc
 _app/src/main/java/emmanuelmuturia/carizma/notifications/uilayer/NotificationsScreenViewModel.kt,5/5/554ba069610e10db8103905ab61dc0553bb6acc2
 ™
 iapp/src/main/java/emmanuelmuturia/carizma/notifications/domainlayer/repository/NotificationsRepository.kt,f/b/fbe67e05b4ba560294101f3e054ef30403f2a7e8
-›
-kapp/src/main/java/emmanuelmuturia/carizma/notifications/datalayer/repository/NotificationsRepositoryImpl.kt,4/d/4db9d4521deeb8c9fb0382b9bf9538cb5a6ed61b
 –
 fapp/src/main/java/emmanuelmuturia/carizma/notifications/dependencyinjection/NotificationsHiltModule.kt,2/2/22b4ef6d538818d41b7d582760cbf1c5316d026c
 Š
@@ -73,3 +71,11 @@ t
 Dapp/src/main/java/emmanuelmuturia/carizma/home/uilayer/HomeScreen.kt,f/0/f094a5e1a5b85e9f4a7d20ac57a7aba790aa93cb
 ˆ
 Xapp/src/main/java/emmanuelmuturia/carizma/commons/uilayer/components/CarizmaDummyCars.kt,c/9/c9c94e80e6787e073e410eb7cbd4d44ea9c638ef
+x
+Happ/src/main/java/emmanuelmuturia/carizma/player/uilayer/PlayerScreen.kt,3/1/3115f7a0549baff1a7703a58ca9265d598cea05b
+r
+Bapp/src/main/java/emmanuelmuturia/carizma/car/uilayer/CarScreen.kt,9/3/9329623549f0d837e62b69ff683ff4a2bc5ec7ea
+x
+Happ/src/main/java/emmanuelmuturia/carizma/garage/uilayer/GarageScreen.kt,2/c/2c067da9e38b5c6726b192eda9d0461645301642
+|
+Lapp/src/main/java/emmanuelmuturia/carizma/settings/uilayer/SettingsScreen.kt,d/3/d3eb90dd1f5d58cfcd33ef52304785fb8eba71eb
