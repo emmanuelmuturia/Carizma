@@ -15,3 +15,7 @@ r
 Bapp/src/main/java/emmanuelmuturia/carizma/car/uilayer/CarScreen.kt,9/3/9329623549f0d837e62b69ff683ff4a2bc5ec7ea
 p
 @app/src/main/java/emmanuelmuturia/carizma/car/domainlayer/Car.kt,9/0/9084ed8dfa771aeec60ef278ddbfa225045dfdce
+x
+Happ/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreen.kt,0/0/0044ab09fb46127e84ea04ee4290000882d6840e
+Å
+Qapp/src/main/java/emmanuelmuturia/carizma/search/uilayer/SearchScreenViewModel.kt,4/7/4781f87e841595cf4718ef8ed6fbf15dac2b621c

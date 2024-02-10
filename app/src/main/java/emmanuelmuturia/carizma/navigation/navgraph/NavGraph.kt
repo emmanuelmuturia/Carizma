@@ -13,6 +13,7 @@ import emmanuelmuturia.carizma.navigation.routes.Routes
 import emmanuelmuturia.carizma.notifications.uilayer.NotificationsScreen
 import emmanuelmuturia.carizma.player.uilayer.PlayerScreen
 import emmanuelmuturia.carizma.profile.uilayer.ProfileScreen
+import emmanuelmuturia.carizma.search.uilayer.SearchScreen
 import emmanuelmuturia.carizma.settings.uilayer.SettingsScreen
 
 @Composable
@@ -45,7 +46,10 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.SearchScreen.route) {
-            //SearchScreen()
+            SearchScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateToCar = {  }
+            )
         }
 
         composable(route = Routes.SettingsScreen.route) {
