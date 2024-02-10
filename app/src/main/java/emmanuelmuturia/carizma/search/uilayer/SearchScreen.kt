@@ -100,7 +100,7 @@ fun SearchScreen(navigateBack: () -> Unit, navigateToCar: () -> Unit) {
                 )
             } else {
                 Text(
-                    text = "No results found.",
+                    text = "No results found...",
                     style = MaterialTheme.typography.titleLarge
                 )
             }
