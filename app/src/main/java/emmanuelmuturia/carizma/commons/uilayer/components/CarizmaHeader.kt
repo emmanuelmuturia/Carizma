@@ -57,13 +57,13 @@ fun CarizmaHeader(
         }
 
         Row(modifier = Modifier.weight(weight = 1f)) {
-            IconButton(onClick = navigateBack) {
+            /*IconButton(onClick = navigateBack) {
                 Icon(
                     imageVector = Icons.Rounded.MoreVert,
                     contentDescription = "Arrow Back",
                     tint = Color.White
                 )
-            }
+            }*/
         }
 
     }

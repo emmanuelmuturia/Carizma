@@ -33,7 +33,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.PlayerScreen.route) {
-            PlayerScreen()
+            PlayerScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(route = Routes.CarScreen.route) {
