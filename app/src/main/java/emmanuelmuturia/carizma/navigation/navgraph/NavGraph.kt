@@ -18,7 +18,7 @@ import emmanuelmuturia.carizma.settings.uilayer.SettingsScreen
 @Composable
 fun NavGraph(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = Routes.GarageScreen.route) {
+    NavHost(navController = navController, startDestination = Routes.CarScreen.route) {
 
         composable(route = Routes.ErrorScreen.route) {
             ErrorScreen(navigateBack = { navController.popBackStack() })
