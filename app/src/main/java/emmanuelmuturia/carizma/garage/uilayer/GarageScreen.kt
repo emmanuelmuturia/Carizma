@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -25,6 +28,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +49,10 @@ import emmanuelmuturia.carizma.commons.uilayer.components.porscheList
 @Composable
 fun GarageScreen(navigateBack: () -> Unit) {
 
+    val isVertical: MutableState<Boolean> = rememberSaveable {
+        mutableStateOf(value = true)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         CarizmaBackgroundImage()
@@ -51,9 +61,12 @@ fun GarageScreen(navigateBack: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            GarageScreenHeader(navigateBack = navigateBack, headerTitle = "My Garage")
+            GarageScreenHeader(
+                navigateBack = navigateBack,
+                headerTitle = "My Garage",
+                verticalToHorizontal = { isVertical.value = !isVertical.value })
 
-            GarageCars()
+            if (isVertical.value) VerticalGarageCars() else HorizontalGarageCars()
 
         }
 
@@ -65,7 +78,8 @@ fun GarageScreen(navigateBack: () -> Unit) {
 @Composable
 fun GarageScreenHeader(
     navigateBack: () -> Unit,
-    headerTitle: String
+    headerTitle: String,
+    verticalToHorizontal: () -> Unit
 ) {
 
     Row(
@@ -93,7 +107,7 @@ fun GarageScreenHeader(
         )
 
         Image(
-            modifier = Modifier.clickable { },
+            modifier = Modifier.clickable(onClick = verticalToHorizontal),
             painter = painterResource(id = R.drawable.grid),
             contentDescription = "Grid View"
         )
@@ -104,9 +118,21 @@ fun GarageScreenHeader(
 
 
 @Composable
-fun GarageCars() {
+fun VerticalGarageCars() {
 
     LazyVerticalGrid(modifier = Modifier.fillMaxSize(), columns = GridCells.Fixed(count = 2)) {
+        items(items = porscheList) { car ->
+            CarItem(car = car)
+        }
+    }
+
+}
+
+
+@Composable
+fun HorizontalGarageCars() {
+
+    LazyColumn(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         items(items = porscheList) { car ->
             CarItem(car = car)
         }
