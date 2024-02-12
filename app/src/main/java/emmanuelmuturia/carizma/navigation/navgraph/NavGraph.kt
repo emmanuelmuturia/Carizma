@@ -2,8 +2,10 @@ package emmanuelmuturia.carizma.navigation.navgraph
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import emmanuelmuturia.carizma.car.uilayer.CarScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
@@ -33,12 +35,17 @@ fun NavGraph(navController: NavHostController) {
             HomeScreen(
                 navigateToHomeScreen = { navController.navigate(route = Routes.HomeScreen.route) },
                 navigateToSearchScreen = { navController.navigate(route = Routes.SearchScreen.route) },
-                navigateToGarageScreen = { navController.navigate(route = Routes.GarageScreen.route) }
+                navigateToGarageScreen = { navController.navigate(route = Routes.GarageScreen.route) },
+                navController = navController
             )
         }
 
-        composable(route = Routes.PlayerScreen.route) {
-            PlayerScreen(navigateBack = { navController.popBackStack() })
+        composable(route = Routes.PlayerScreen.route, arguments = listOf(
+            navArgument(name = "carId") {
+                type = NavType.IntType
+            }
+        )) {
+            PlayerScreen(navigateBack = { navController.popBackStack() }, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
         }
 
         composable(route = Routes.CarScreen.route) {

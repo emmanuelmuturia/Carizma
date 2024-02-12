@@ -6,6 +6,6 @@ data class Car(
     val carSound: String = "",
     val carImage: String = "",
     val carDescription: String = "",
-    val carTopSpeed: Int = 0,
+    val carTopSpeed: Double = 0.0,
     val carAcceleration: Double = 0.0
 )
