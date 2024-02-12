@@ -2,8 +2,10 @@ package emmanuelmuturia.carizma.navigation.navgraph
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import emmanuelmuturia.carizma.car.uilayer.CarScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
@@ -19,7 +21,7 @@ import emmanuelmuturia.carizma.settings.uilayer.SettingsScreen
 @Composable
 fun NavGraph(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = Routes.SearchScreen.route) {
+    NavHost(navController = navController, startDestination = Routes.HomeScreen.route) {
 
         composable(route = Routes.ErrorScreen.route) {
             ErrorScreen(navigateBack = { navController.popBackStack() })
@@ -30,11 +32,20 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.HomeScreen.route) {
-            HomeScreen(navController = navController)
+            HomeScreen(
+                navigateToHomeScreen = { navController.navigate(route = Routes.HomeScreen.route) },
+                navigateToSearchScreen = { navController.navigate(route = Routes.SearchScreen.route) },
+                navigateToGarageScreen = { navController.navigate(route = Routes.GarageScreen.route) },
+                navController = navController
+            )
         }
 
-        composable(route = Routes.PlayerScreen.route) {
-            PlayerScreen(navigateBack = { navController.popBackStack() })
+        composable(route = Routes.PlayerScreen.route, arguments = listOf(
+            navArgument(name = "carId") {
+                type = NavType.IntType
+            }
+        )) {
+            PlayerScreen(navigateBack = { navController.popBackStack() }, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
         }
 
         composable(route = Routes.CarScreen.route) {
@@ -57,7 +68,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.GarageScreen.route) {
-            GarageScreen()
+            GarageScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(route = Routes.ProfileScreen.route) {

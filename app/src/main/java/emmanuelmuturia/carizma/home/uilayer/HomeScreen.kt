@@ -24,25 +24,37 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import emmanuelmuturia.carizma.car.domainlayer.Car
+import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBottomNavigationBar
-import emmanuelmuturia.carizma.commons.uilayer.components.astonMartinList
-import emmanuelmuturia.carizma.commons.uilayer.components.koenigseggList
-import emmanuelmuturia.carizma.commons.uilayer.components.porscheList
+import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
+import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(
+    navigateToHomeScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
+    navigateToGarageScreen: () -> Unit,
+    navController: NavHostController
+) {
+
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val carList by homeScreenViewModel.carListState.collectAsState()
+    val carizmaState by homeScreenViewModel.carizmaState.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -50,82 +62,60 @@ fun HomeScreen(navController: NavHostController) {
 
         CarizmaBackgroundImage()
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        when (carizmaState) {
 
-            HomeScreenHeader()
+            is CarizmaState.Error -> ErrorScreen {}
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(weight = 1f)
-                    .padding(bottom = 7.dp)
+            is CarizmaState.Loading -> LoadingScreen()
+
+            else -> Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                item {
-                    HighlightCar()
-                }
+                HomeScreenHeader()
 
-                item {
-                    Spacer(modifier = Modifier.height(height = 21.dp))
-                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(weight = 1f)
+                        .padding(bottom = 7.dp)
+                ) {
 
-                item {
+                    items(items = carList) { car ->
+                        HighlightCar(car = car, navController = navController)
+                    }
 
-                    Text(
-                        modifier = Modifier.padding(start = 14.dp),
-                        text = "Koenigsegg Agera R",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    item {
+                        Spacer(modifier = Modifier.height(height = 21.dp))
+                    }
 
-                    Spacer(modifier = Modifier.height(height = 3.5.dp))
+                    item {
 
-                    LazyRow {
-                        items(koenigseggList) { car ->
-                            CarList(car = car)
+                        Text(
+                            modifier = Modifier.padding(start = 14.dp),
+                            text = "Formula One (F1)",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(height = 3.5.dp))
+
+                        LazyRow {
+                            items(items = carList) { car ->
+                                CarList(car = car, navController = navController)
+                            }
                         }
                     }
+
                 }
 
-                item {
-
-                    Text(
-                        modifier = Modifier.padding(start = 14.dp),
-                        text = "Porsche 911",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(height = 3.5.dp))
-
-                    LazyRow {
-                        items(porscheList) { car ->
-                            CarList(car = car)
-                        }
-                    }
-                }
-
-                item {
-
-                    Text(
-                        modifier = Modifier.padding(start = 14.dp),
-                        text = "Aston Martin DB5",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(height = 3.5.dp))
-
-                    LazyRow {
-                        items(astonMartinList) { car ->
-                            CarList(car = car)
-                        }
-                    }
-                }
+                CarizmaBottomNavigationBar(
+                    navigateToHomeScreen = navigateToHomeScreen,
+                    navigateToSearchScreen = navigateToSearchScreen,
+                    navigateToGarageScreen = navigateToGarageScreen
+                )
 
             }
-
-           CarizmaBottomNavigationBar(navController = navController)
 
         }
 
@@ -158,7 +148,7 @@ private fun HomeScreenHeader() {
                 modifier = Modifier
                     .padding(end = 21.dp)
                     .size(size = 35.dp)
-                    .clickable(onClick = {  }),
+                    .clickable(onClick = { }),
                 imageVector = Icons.Rounded.Notifications,
                 contentDescription = "Notifications",
                 tint = Color.White
@@ -182,7 +172,7 @@ private fun HomeScreenHeader() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HighlightCar() {
+fun HighlightCar(car: Car, navController: NavHostController) {
 
     Row(
         modifier = Modifier
@@ -196,15 +186,14 @@ fun HighlightCar() {
             modifier = Modifier
                 .height(height = 140.dp)
                 .width(width = 182.dp)
-                .clickable {
-
-                }, shape = RoundedCornerShape(size = 21.dp)
+                .clickable { navController.navigate(route = "playerScreen/${car.carId}") },
+            shape = RoundedCornerShape(size = 21.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
                 GlideImage(
-                    model = "https://plus.unsplash.com/premium_photo-1683134240084-ba074973f75e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZjF8ZW58MHx8MHx8fDA%3D",
+                    model = car.carImage,
                     contentDescription = "Highlight Car",
                     contentScale = ContentScale.Crop
                 )
@@ -216,7 +205,7 @@ fun HighlightCar() {
         Spacer(modifier = Modifier.width(width = 7.dp))
 
         Text(
-            text = "F1: Limited Edition",
+            text = car.carName,
             style = MaterialTheme.typography.titleLarge
         )
 
@@ -227,28 +216,33 @@ fun HighlightCar() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CarList(car: Car) {
+fun CarList(
+    car: Car?,
+    navController: NavHostController
+) {
 
     Column(
-        modifier = Modifier.padding(start = 14.dp)
+        modifier = Modifier.padding(start = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Card(
             modifier = Modifier
                 .height(height = 140.dp)
                 .width(width = 140.dp)
-                .clickable {
-
-                }, shape = RoundedCornerShape(size = 21.dp)
+                .clickable { navController.navigate(route = "playerScreen/${car?.carId}") },
+            shape = RoundedCornerShape(size = 21.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-                GlideImage(
-                    model = car.carImage,
-                    contentDescription = "The Latest Car",
-                    contentScale = ContentScale.Crop
-                )
+                if (car != null) {
+                    GlideImage(
+                        model = car.carImage,
+                        contentDescription = "The Latest Car",
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
             }
 
@@ -256,11 +250,15 @@ fun CarList(car: Car) {
 
         Spacer(modifier = Modifier.height(height = 7.dp))
 
-        Text(
-            text = car.carName,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold
-        )
+        if (car != null) {
+
+            Text(
+                text = car.carName,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+        }
 
         Spacer(modifier = Modifier.height(height = 21.dp))
 

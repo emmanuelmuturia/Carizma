@@ -8,7 +8,7 @@ sealed class Routes(val route: String) {
 
     data object HomeScreen: Routes(route = "homeScreen")
 
-    data object PlayerScreen: Routes(route = "playerScreen")
+    data object PlayerScreen: Routes(route = "playerScreen/{carId}")
 
     data object CarScreen: Routes(route = "carScreen")
 

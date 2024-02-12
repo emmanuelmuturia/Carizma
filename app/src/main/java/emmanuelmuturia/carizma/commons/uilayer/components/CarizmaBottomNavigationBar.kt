@@ -30,7 +30,11 @@ import emmanuelmuturia.carizma.navigation.routes.Routes
 import emmanuelmuturia.carizma.theme.CarizmaTranslucent
 
 @Composable
-fun CarizmaBottomNavigationBar(navController: NavHostController) {
+fun CarizmaBottomNavigationBar(
+    navigateToHomeScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
+    navigateToGarageScreen: () -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -40,15 +44,15 @@ fun CarizmaBottomNavigationBar(navController: NavHostController) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = { navController.navigate(route = Routes.HomeScreen.route) }) {
+        IconButton(onClick = navigateToHomeScreen) {
             Icon(imageVector = Icons.Rounded.Home, contentDescription = null)
         }
 
-        IconButton(onClick = { navController.navigate(route = Routes.SearchScreen.route) }) {
+        IconButton(onClick = navigateToSearchScreen) {
             Icon(imageVector = Icons.Rounded.Search, contentDescription = null)
         }
 
-        IconButton(onClick = { navController.navigate(route = Routes.GarageScreen.route) }) {
+        IconButton(onClick = navigateToGarageScreen) {
             Image(painter = painterResource(id = R.drawable.garage), contentDescription = "Garage")
         }
 

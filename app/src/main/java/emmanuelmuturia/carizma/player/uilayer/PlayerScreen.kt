@@ -1,5 +1,6 @@
 package emmanuelmuturia.carizma.player.uilayer
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Card
@@ -29,20 +27,38 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import emmanuelmuturia.carizma.R
+import emmanuelmuturia.carizma.car.domainlayer.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
 import emmanuelmuturia.carizma.theme.CarizmaWhite
 
 @Composable
-fun PlayerScreen(navigateBack: () -> Unit) {
+fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
+
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
+    val playerScreenViewModel: PlayerScreenViewModel = hiltViewModel()
+    //val carList by playerScreenViewModel.carListState.collectAsState()
+
+    val car = homeScreenViewModel.getCarById(carId = carId)
+
+    var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -54,12 +70,16 @@ fun PlayerScreen(navigateBack: () -> Unit) {
 
             CarizmaHeader(navigateBack = navigateBack, headerTitle = "Player")
 
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 7.dp)) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 7.dp)
+            ) {
 
                 item {
-                    PlayerCar()
+                    if (car != null) {
+                        PlayerCar(car = car)
+                    }
                 }
 
                 item {
@@ -75,7 +95,14 @@ fun PlayerScreen(navigateBack: () -> Unit) {
                 }
 
                 item {
-                    PlayerControls()
+                    if (car != null) {
+                        PlayerControls(
+                            playerScreenViewModel = playerScreenViewModel,
+                            car = car,
+                            isPlaying = isPlaying,
+                            togglePlayPause = { isPlaying = !isPlaying }
+                        )
+                    }
                 }
 
             }
@@ -89,7 +116,9 @@ fun PlayerScreen(navigateBack: () -> Unit) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun PlayerCar() {
+fun PlayerCar(
+    car: Car
+) {
 
     Column(
         modifier = Modifier
@@ -108,8 +137,9 @@ fun PlayerCar() {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
+
                 GlideImage(
-                    model = "https://images.unsplash.com/photo-1594950195709-a14f66c242d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWNsYXJlbiUyMHAxfGVufDB8fDB8fHww",
+                    model = car.carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.Crop
                 )
@@ -120,10 +150,12 @@ fun PlayerCar() {
 
         Spacer(modifier = Modifier.width(width = 7.dp))
 
+
         Text(
-            text = "McLaren P1",
+            text = car.carName,
             style = MaterialTheme.typography.titleLarge
         )
+
 
     }
 
@@ -146,16 +178,17 @@ fun PlayerAudioBar() {
 
 
 @Composable
-fun PlayerControls() {
+fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPlaying: Boolean, togglePlayPause: () -> Unit) {
 
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-        ,horizontalArrangement = Arrangement.SpaceEvenly,
+            .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = {
+
+        }) {
             Icon(
                 modifier = Modifier.size(size = 42.dp),
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
@@ -164,14 +197,23 @@ fun PlayerControls() {
             )
         }
 
-        IconButton(onClick = {}) {
-            Icon(
-                modifier = Modifier.size(size = 42.dp),
-                imageVector = Icons.Rounded.PlayArrow,
-                contentDescription = "Play",
-                tint = Color.White
-            )
-        }
+        Image(
+            modifier = Modifier
+                .clickable {
+                    togglePlayPause()
+                    if (isPlaying) {
+                        playerScreenViewModel.pauseCarAudio()
+                        !isPlaying
+                    } else {
+                        playerScreenViewModel.playCarAudio(carAudio = car.carSound)
+                        !isPlaying
+                    }
+                }
+                .size(size = 42.dp),
+            painter = painterResource(id = if (isPlaying) R.drawable.pause else R.drawable.play),
+            contentDescription = "Play/Pause Button",
+            contentScale = ContentScale.Crop
+        )
 
         IconButton(onClick = {}) {
             Icon(
