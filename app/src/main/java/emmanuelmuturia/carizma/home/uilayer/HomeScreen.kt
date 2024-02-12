@@ -42,7 +42,11 @@ import emmanuelmuturia.carizma.commons.uilayer.components.porscheList
 import java.util.Calendar
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(
+    navigateToHomeScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
+    navigateToGarageScreen: () -> Unit
+) {
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -125,7 +129,11 @@ fun HomeScreen(navController: NavHostController) {
 
             }
 
-           CarizmaBottomNavigationBar(navController = navController)
+           CarizmaBottomNavigationBar(
+               navigateToHomeScreen = navigateToHomeScreen,
+               navigateToSearchScreen = navigateToSearchScreen,
+               navigateToGarageScreen = navigateToGarageScreen
+           )
 
         }
 

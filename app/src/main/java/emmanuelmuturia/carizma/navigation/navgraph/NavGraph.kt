@@ -19,7 +19,7 @@ import emmanuelmuturia.carizma.settings.uilayer.SettingsScreen
 @Composable
 fun NavGraph(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = Routes.SearchScreen.route) {
+    NavHost(navController = navController, startDestination = Routes.HomeScreen.route) {
 
         composable(route = Routes.ErrorScreen.route) {
             ErrorScreen(navigateBack = { navController.popBackStack() })
@@ -30,7 +30,11 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.HomeScreen.route) {
-            HomeScreen(navController = navController)
+            HomeScreen(
+                navigateToHomeScreen = { navController.navigate(route = Routes.HomeScreen.route) },
+                navigateToSearchScreen = { navController.navigate(route = Routes.SearchScreen.route) },
+                navigateToGarageScreen = { navController.navigate(route = Routes.GarageScreen.route) }
+            )
         }
 
         composable(route = Routes.PlayerScreen.route) {
@@ -57,7 +61,7 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(route = Routes.GarageScreen.route) {
-            GarageScreen()
+            GarageScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(route = Routes.ProfileScreen.route) {

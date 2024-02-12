@@ -41,7 +41,7 @@ import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.porscheList
 
 @Composable
-fun GarageScreen() {
+fun GarageScreen(navigateBack: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -51,7 +51,7 @@ fun GarageScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            GarageScreenHeader(navigateBack = { /*TODO*/ }, headerTitle = "My Garage")
+            GarageScreenHeader(navigateBack = navigateBack, headerTitle = "My Garage")
 
             GarageCars()
 
