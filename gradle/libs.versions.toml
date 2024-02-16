@@ -13,7 +13,7 @@ kspVersion = "1.9.22-1.0.16"
 daggerHiltPluginVersion = "2.48.1"
 
 # Google...
-googleServicesVersion = "4.4.0"
+googleServicesVersion = "4.4.1"
 firebaseCrashlyticsVersion = "2.9.9"
 secretsGradlePlugin = "2.0.1"
 firebasePerformanceVersion = "1.4.2"
@@ -22,7 +22,7 @@ firebasePerformanceVersion = "1.4.2"
 appSweepGradlePluginVersion = "latest.release"
 
 # Compose BOM...
-composeBOMVersion = "2024.01.00"
+composeBOMVersion = "2024.02.00"
 
 # Activity Compose...
 activityComposeVersion = "1.8.2"
@@ -50,10 +50,10 @@ appcompatVersion = "1.6.1"
 materialVersion = "1.11.0"
 
 #Navigation...
-navigationComposeVersion = "2.7.6"
+navigationComposeVersion = "2.7.7"
 
 # Firebase BOM...
-firebaseBOMVersion = "32.7.1"
+firebaseBOMVersion = "32.7.2"
 
 # Glide...
 glideVersion = "1.0.0-beta01"
@@ -80,7 +80,7 @@ leakCanaryVersion = "2.12"
 timberVersion = "5.0.1"
 
 # Material3...
-material3Version = "1.1.2"
+material3Version = "1.2.0"
 
 # Robolectric...
 robolectricVersion = "4.11.1"
