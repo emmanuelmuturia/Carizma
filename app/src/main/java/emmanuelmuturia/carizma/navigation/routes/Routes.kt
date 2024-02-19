@@ -10,7 +10,7 @@ sealed class Routes(val route: String) {
 
     data object PlayerScreen: Routes(route = "playerScreen/{carId}")
 
-    data object CarScreen: Routes(route = "carScreen")
+    data object CarScreen: Routes(route = "carScreen/{carId}")
 
     data object SearchScreen: Routes(route = "searchScreen")
 

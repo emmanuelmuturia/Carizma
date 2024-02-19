@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma.car.domainlayer
+package emmanuelmuturia.carizma.car.domainlayer.model
 
 data class Car(
     val carId: Int = 0,

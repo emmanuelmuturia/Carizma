@@ -44,11 +44,15 @@ fun NavGraph(navController: NavHostController) {
                 type = NavType.IntType
             }
         )) {
-            PlayerScreen(navigateBack = { navController.popBackStack() }, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
+            PlayerScreen(navController = navController, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
         }
 
-        composable(route = Routes.CarScreen.route) {
-            CarScreen()
+        composable(route = Routes.CarScreen.route, arguments = listOf(
+            navArgument(name = "carId") {
+                type = NavType.IntType
+            }
+        )) {
+            CarScreen(navigateBack = { navController.popBackStack() }, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
         }
 
         composable(route = Routes.SearchScreen.route) {
