@@ -20,7 +20,15 @@ class PlayerRepositoryImplementation @Inject constructor(val context: Context) :
 
     override suspend fun pauseCarAudio() {
         player.pause()
-        //player.release()
+        player.release()
+    }
+
+    override suspend fun rewindCarAudio() {
+        player.seekBack()
+    }
+
+    override suspend fun fastForwardCarAudio() {
+        player.seekForward()
     }
 
 }

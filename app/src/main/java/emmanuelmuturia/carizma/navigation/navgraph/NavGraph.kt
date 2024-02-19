@@ -12,7 +12,6 @@ import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.garage.uilayer.GarageScreen
 import emmanuelmuturia.carizma.home.uilayer.HomeScreen
 import emmanuelmuturia.carizma.navigation.routes.Routes
-import emmanuelmuturia.carizma.notifications.uilayer.NotificationsScreen
 import emmanuelmuturia.carizma.player.uilayer.PlayerScreen
 import emmanuelmuturia.carizma.profile.uilayer.ProfileScreen
 import emmanuelmuturia.carizma.search.uilayer.SearchScreen
@@ -50,10 +49,6 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Routes.CarScreen.route) {
             CarScreen()
-        }
-
-        composable(route = Routes.NotificationsScreen.route) {
-            NotificationsScreen(navController = navController)
         }
 
         composable(route = Routes.SearchScreen.route) {
