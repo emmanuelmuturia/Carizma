@@ -12,8 +12,6 @@ sealed class Routes(val route: String) {
 
     data object CarScreen: Routes(route = "carScreen")
 
-    data object NotificationsScreen: Routes(route = "notificationsScreen")
-
     data object SearchScreen: Routes(route = "searchScreen")
 
     data object SettingsScreen: Routes(route = "settingsScreen")

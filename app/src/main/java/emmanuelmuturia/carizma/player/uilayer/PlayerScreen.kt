@@ -18,10 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,7 +53,6 @@ fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
 
     val playerScreenViewModel: PlayerScreenViewModel = hiltViewModel()
-    //val carList by playerScreenViewModel.carListState.collectAsState()
 
     val car = homeScreenViewModel.getCarById(carId = carId)
 
@@ -165,7 +163,7 @@ fun PlayerCar(
 @Composable
 fun PlayerAudioBar() {
 
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 14.dp, end = 14.dp)
@@ -186,16 +184,16 @@ fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPla
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = {
+        Image(
+            modifier = Modifier
+                .clickable {
 
-        }) {
-            Icon(
-                modifier = Modifier.size(size = 42.dp),
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = "Previous",
-                tint = Color.White
-            )
-        }
+                }
+                .size(size = 42.dp),
+            painter = painterResource(id = R.drawable.rewind),
+            contentDescription = "Replay Button",
+            contentScale = ContentScale.Crop
+        )
 
         Image(
             modifier = Modifier
@@ -215,32 +213,16 @@ fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPla
             contentScale = ContentScale.Crop
         )
 
-        IconButton(onClick = {}) {
-            Icon(
-                modifier = Modifier.size(size = 42.dp),
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                contentDescription = "Next",
-                tint = Color.White
-            )
-        }
+        Image(
+            modifier = Modifier
+                .clickable {
 
-    }
-
-    Spacer(modifier = Modifier.height(height = 28.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-
-        IconButton(onClick = {}) {
-            Icon(
-                modifier = Modifier.size(size = 42.dp),
-                imageVector = Icons.Rounded.Refresh,
-                contentDescription = "Garage",
-                tint = Color.White
-            )
-        }
+                }
+                .size(size = 42.dp),
+            painter = painterResource(id = R.drawable.forward),
+            contentDescription = "Forward Button",
+            contentScale = ContentScale.Crop
+        )
 
     }
 
