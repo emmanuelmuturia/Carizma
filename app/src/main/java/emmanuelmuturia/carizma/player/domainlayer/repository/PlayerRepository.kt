@@ -9,4 +9,8 @@ interface PlayerRepository {
 
     suspend fun pauseCarAudio()
 
+    suspend fun rewindCarAudio()
+
+    suspend fun fastForwardCarAudio()
+
 }

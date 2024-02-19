@@ -187,7 +187,7 @@ fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPla
         Image(
             modifier = Modifier
                 .clickable {
-
+                    playerScreenViewModel.rewindCarAudio()
                 }
                 .size(size = 42.dp),
             painter = painterResource(id = R.drawable.rewind),
@@ -216,7 +216,7 @@ fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPla
         Image(
             modifier = Modifier
                 .clickable {
-
+                    playerScreenViewModel.fastForwardCarAudio()
                 }
                 .size(size = 42.dp),
             painter = painterResource(id = R.drawable.forward),

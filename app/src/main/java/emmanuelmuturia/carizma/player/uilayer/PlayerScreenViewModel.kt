@@ -33,6 +33,16 @@ class PlayerScreenViewModel @Inject constructor(
         }
     }
 
+    fun rewindCarAudio() {
+        viewModelScope.launch {
+            playerRepository.rewindCarAudio()
+        }
+    }
 
+    fun fastForwardCarAudio() {
+        viewModelScope.launch {
+            playerRepository.fastForwardCarAudio()
+        }
+    }
 
 }
