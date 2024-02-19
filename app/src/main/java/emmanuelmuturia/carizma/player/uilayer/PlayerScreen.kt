@@ -15,14 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,22 +27,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import emmanuelmuturia.carizma.R
-import emmanuelmuturia.carizma.car.domainlayer.Car
+import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
 import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
 import emmanuelmuturia.carizma.theme.CarizmaWhite
 
 @Composable
-fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
+fun PlayerScreen(navController: NavHostController, carId: Int?) {
 
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
 
@@ -66,7 +60,7 @@ fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            CarizmaHeader(navigateBack = navigateBack, headerTitle = "Player")
+            CarizmaHeader(navigateBack = { navController.popBackStack() }, headerTitle = "Player")
 
             LazyColumn(
                 modifier = Modifier
@@ -76,7 +70,7 @@ fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
 
                 item {
                     if (car != null) {
-                        PlayerCar(car = car)
+                        PlayerCar(car = car, navController = navController)
                     }
                 }
 
@@ -115,7 +109,8 @@ fun PlayerScreen(navigateBack: () -> Unit, carId: Int?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PlayerCar(
-    car: Car
+    car: Car,
+    navController: NavHostController
 ) {
 
     Column(
@@ -129,7 +124,7 @@ fun PlayerCar(
                 .height(height = 280.dp)
                 .width(width = 280.dp)
                 .clickable {
-
+                           navController.navigate(route = "carScreen/${car.carId}")
                 }, shape = RoundedCornerShape(size = 21.dp)
         ) {
 

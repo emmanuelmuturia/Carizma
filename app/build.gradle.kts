@@ -7,6 +7,7 @@ plugins {
     alias(notation = libs.plugins.com.google.firebase.crashlytics)
     alias(notation = libs.plugins.com.google.firebase.performance)
     alias(notation = libs.plugins.com.guardsquare.appsweep)
+    alias(notation = libs.plugins.com.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -97,6 +98,9 @@ dependencies {
 
     // Timber...
     implementation(dependencyNotation = libs.timber)
+
+    // Gemini API...
+    implementation(dependencyNotation = libs.gemini.api)
 
     // Android...
     implementation(dependencyNotation = libs.androidx.core.ktx)

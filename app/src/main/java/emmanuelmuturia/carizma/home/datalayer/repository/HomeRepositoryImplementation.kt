@@ -2,7 +2,7 @@ package emmanuelmuturia.carizma.home.datalayer.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObjects
-import emmanuelmuturia.carizma.car.domainlayer.Car
+import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.home.domainlayer.repository.HomeRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

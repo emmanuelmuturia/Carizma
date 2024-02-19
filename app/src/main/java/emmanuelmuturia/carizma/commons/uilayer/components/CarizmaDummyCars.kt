@@ -1,6 +1,6 @@
 package emmanuelmuturia.carizma.commons.uilayer.components
 
-import emmanuelmuturia.carizma.car.domainlayer.Car
+import emmanuelmuturia.carizma.car.domainlayer.model.Car
 
 val koenigseggList = List(size = 7) {
     Car(

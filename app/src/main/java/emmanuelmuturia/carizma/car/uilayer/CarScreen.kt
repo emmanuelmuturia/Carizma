@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -25,13 +30,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
+import emmanuelmuturia.carizma.theme.CarizmaOrange
 
 @Composable
-fun CarScreen() {
+fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
+
+    val carScreenViewModel: CarScreenViewModel = hiltViewModel()
+
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
+    val car = homeScreenViewModel.getCarById(carId = carId)
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -41,12 +57,16 @@ fun CarScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            CarizmaHeader(navigateBack = { /*TODO*/ }, headerTitle = "McLaren P1")
+            if (car != null) {
+                CarizmaHeader(navigateBack = navigateBack, headerTitle = car.carName)
+            }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 item {
-                    CarDetails()
+                    if (car != null) {
+                        CarDetails(car = car, carScreenViewModel = carScreenViewModel)
+                    }
                 }
 
             }
@@ -60,7 +80,11 @@ fun CarScreen() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CarDetails() {
+fun CarDetails(car: Car, carScreenViewModel: CarScreenViewModel) {
+
+    val carDescription by carScreenViewModel.carDescription.collectAsStateWithLifecycle()
+
+    val isResponseLoading by carScreenViewModel.isResponseLoading.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -80,7 +104,7 @@ fun CarDetails() {
             Box(modifier = Modifier.fillMaxSize()) {
 
                 GlideImage(
-                    model = "https://images.unsplash.com/photo-1594950195709-a14f66c242d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWNsYXJlbiUyMHAxfGVufDB8fDB8fHww",
+                    model = car.carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.Crop
                 )
@@ -92,7 +116,7 @@ fun CarDetails() {
         Spacer(modifier = Modifier.height(height = 28.dp))
 
         Text(
-            text = "McLaren P1",
+            text = car.carName,
             style = MaterialTheme.typography.titleLarge
         )
 
@@ -111,7 +135,7 @@ fun CarDetails() {
                 }
 
                 withStyle(style = SpanStyle(fontSize = 21.sp)) {
-                    append(text = "320 Km/h")
+                    append(text = "${car.carTopSpeed} Km/h")
                 }
 
             })
@@ -123,7 +147,7 @@ fun CarDetails() {
                 }
 
                 withStyle(style = SpanStyle(fontSize = 21.sp)) {
-                    append(text = "0 to 100 (3.5 Seconds)")
+                    append(text = "${car.carAcceleration} Seconds (0 to 100)")
                 }
 
             })
@@ -132,13 +156,33 @@ fun CarDetails() {
 
         Spacer(modifier = Modifier.height(height = 28.dp))
 
-        Text(
-            modifier = Modifier.padding(all = 7.dp),
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Button(
+            onClick = {
+                carScreenViewModel.getCarDescription(car = car)
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = CarizmaOrange,
+                contentColor = Color.White
+            )
+        ) {
+            Text(text = "Fun Fact!", style = MaterialTheme.typography.bodyLarge)
+        }
 
-        Spacer(modifier = Modifier.height(height = 21.dp))
+        if (isResponseLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.padding(all = 16.dp),
+                color = Color.White,
+                strokeWidth = 3.5.dp
+            )
+        } else {
+            carDescription?.let {
+                Text(
+                    modifier = Modifier.padding(all = 7.dp),
+                    text = it,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
 
     }
 
