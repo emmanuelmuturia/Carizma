@@ -1,9 +1,10 @@
 package emmanuelmuturia.carizma.home.domainlayer.repository
 
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
+import kotlinx.coroutines.flow.Flow
 
-interface HomeRepository {
+fun interface HomeRepository {
 
-    suspend fun getCars(): List<Car>
+    fun getCars(): Flow<List<Car>>
 
 }

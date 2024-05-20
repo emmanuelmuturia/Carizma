@@ -18,36 +18,42 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaOrange
 import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
-import emmanuelmuturia.carizma.theme.CarizmaOrange
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
 
-    val carScreenViewModel: CarScreenViewModel = hiltViewModel()
+    val carScreenViewModel: CarScreenViewModel = koinViewModel()
 
-    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
 
-    val car = homeScreenViewModel.getCarById(carId = carId)
+    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+
+    LaunchedEffect(key1 = carId) {
+        car = homeScreenViewModel.getCarById(carId = carId)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -57,16 +63,12 @@ fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            if (car != null) {
-                CarizmaHeader(navigateBack = navigateBack, headerTitle = car.carName)
-            }
+            car?.let { CarizmaHeader(navigateBack = navigateBack, headerTitle = it.carName) }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 item {
-                    if (car != null) {
-                        CarDetails(car = car, carScreenViewModel = carScreenViewModel)
-                    }
+                    car?.let { CarDetails(car = it, carScreenViewModel = carScreenViewModel) }
                 }
 
             }
@@ -77,8 +79,6 @@ fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
 
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CarDetails(car: Car, carScreenViewModel: CarScreenViewModel) {
 
@@ -103,7 +103,7 @@ fun CarDetails(car: Car, carScreenViewModel: CarScreenViewModel) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-                GlideImage(
+                AsyncImage(
                     model = car.carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.Crop

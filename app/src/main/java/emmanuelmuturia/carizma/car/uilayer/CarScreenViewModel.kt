@@ -3,7 +3,6 @@ package emmanuelmuturia.carizma.car.uilayer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.car.domainlayer.repository.CarRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class CarScreenViewModel @Inject constructor(
+class CarScreenViewModel (
     application: Application,
     private val carRepository: CarRepository
 ): AndroidViewModel(application = application) {

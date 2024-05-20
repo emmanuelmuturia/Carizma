@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,27 +31,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaWhite
 import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
-import emmanuelmuturia.carizma.theme.CarizmaWhite
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PlayerScreen(navController: NavHostController, carId: Int?) {
 
-    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
 
-    val playerScreenViewModel: PlayerScreenViewModel = hiltViewModel()
-
-    val car = homeScreenViewModel.getCarById(carId = carId)
+    val playerScreenViewModel: PlayerScreenViewModel = koinViewModel()
 
     var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
+
+    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+
+    LaunchedEffect(key1 = carId) {
+        car = homeScreenViewModel.getCarById(carId = carId)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -69,9 +73,7 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
             ) {
 
                 item {
-                    if (car != null) {
-                        PlayerCar(car = car, navController = navController)
-                    }
+                    car?.let { PlayerCar(car = it, navController = navController) }
                 }
 
                 item {
@@ -87,10 +89,10 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
                 }
 
                 item {
-                    if (car != null) {
+                    car?.let {
                         PlayerControls(
                             playerScreenViewModel = playerScreenViewModel,
-                            car = car,
+                            car = it,
                             isPlaying = isPlaying,
                             togglePlayPause = { isPlaying = !isPlaying }
                         )
@@ -106,7 +108,6 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PlayerCar(
     car: Car,
@@ -124,14 +125,14 @@ fun PlayerCar(
                 .height(height = 280.dp)
                 .width(width = 280.dp)
                 .clickable {
-                           navController.navigate(route = "carScreen/${car.carId}")
+                    navController.navigate(route = "carScreen/${car.carId}")
                 }, shape = RoundedCornerShape(size = 21.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
 
-                GlideImage(
+                AsyncImage(
                     model = car.carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.Crop
@@ -171,7 +172,12 @@ fun PlayerAudioBar() {
 
 
 @Composable
-fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPlaying: Boolean, togglePlayPause: () -> Unit) {
+fun PlayerControls(
+    playerScreenViewModel: PlayerScreenViewModel,
+    car: Car,
+    isPlaying: Boolean,
+    togglePlayPause: () -> Unit
+) {
 
     Row(
         modifier = Modifier

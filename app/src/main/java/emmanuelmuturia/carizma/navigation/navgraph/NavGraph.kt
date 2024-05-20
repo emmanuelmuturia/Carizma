@@ -52,7 +52,7 @@ fun NavGraph(navController: NavHostController) {
                 type = NavType.IntType
             }
         )) {
-            CarScreen(navigateBack = { navController.popBackStack() }, carId = navController.currentBackStackEntry?.arguments?.getInt("carId"))
+            CarScreen { navController.popBackStack() }
         }
 
         composable(route = Routes.SearchScreen.route) {

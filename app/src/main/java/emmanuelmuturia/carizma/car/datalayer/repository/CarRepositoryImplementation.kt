@@ -7,7 +7,7 @@ import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.car.domainlayer.repository.CarRepository
 import javax.inject.Inject
 
-class CarRepositoryImplementation @Inject constructor(
+class CarRepositoryImplementation (
     private val generativeModel: GenerativeModel
 ) : CarRepository {
 

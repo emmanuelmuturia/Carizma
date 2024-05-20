@@ -38,8 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
@@ -140,7 +139,6 @@ fun HorizontalGarageCars() {
 }
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CarItem(car: Car) {
 
@@ -159,7 +157,7 @@ fun CarItem(car: Car) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-                GlideImage(
+                AsyncImage(
                     model = car.carImage,
                     contentDescription = "The Garage Car",
                     contentScale = ContentScale.Crop

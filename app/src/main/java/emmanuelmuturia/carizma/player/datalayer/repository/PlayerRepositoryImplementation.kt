@@ -5,9 +5,8 @@ import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import emmanuelmuturia.carizma.player.domainlayer.repository.PlayerRepository
-import javax.inject.Inject
 
-class PlayerRepositoryImplementation @Inject constructor(val context: Context) : PlayerRepository {
+class PlayerRepositoryImplementation (val context: Context) : PlayerRepository {
 
     private val player by lazy { ExoPlayer.Builder(context).build() }
 
