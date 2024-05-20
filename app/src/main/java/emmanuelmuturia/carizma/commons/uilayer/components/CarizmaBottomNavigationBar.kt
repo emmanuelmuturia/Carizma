@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.navigation.routes.Routes
-import emmanuelmuturia.carizma.theme.CarizmaTranslucent
+import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaTranslucent
 
 @Composable
 fun CarizmaBottomNavigationBar(

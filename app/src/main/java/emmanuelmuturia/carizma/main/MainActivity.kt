@@ -8,11 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.AndroidEntryPoint
+import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaTheme
 import emmanuelmuturia.carizma.navigation.navgraph.NavGraph
-import emmanuelmuturia.carizma.theme.CarizmaTheme
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 

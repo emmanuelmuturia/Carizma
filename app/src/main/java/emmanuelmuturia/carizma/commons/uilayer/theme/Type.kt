@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma.theme
+package emmanuelmuturia.carizma.commons.uilayer.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color

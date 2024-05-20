@@ -32,16 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBottomNavigationBar
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
+import org.koin.androidx.compose.koinViewModel
 import java.util.Calendar
 
 @Composable
@@ -52,7 +51,7 @@ fun HomeScreen(
     navController: NavHostController
 ) {
 
-    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
     val carList by homeScreenViewModel.carListState.collectAsState()
     val carizmaState by homeScreenViewModel.carizmaState.collectAsState()
 
@@ -169,8 +168,6 @@ private fun HomeScreenHeader() {
 
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HighlightCar(car: Car, navController: NavHostController) {
 
@@ -192,7 +189,7 @@ fun HighlightCar(car: Car, navController: NavHostController) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-                GlideImage(
+                AsyncImage(
                     model = car.carImage,
                     contentDescription = "Highlight Car",
                     contentScale = ContentScale.Crop
@@ -213,8 +210,6 @@ fun HighlightCar(car: Car, navController: NavHostController) {
 
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CarList(
     car: Car?,
@@ -237,7 +232,7 @@ fun CarList(
             Box(modifier = Modifier.fillMaxSize()) {
 
                 if (car != null) {
-                    GlideImage(
+                    AsyncImage(
                         model = car.carImage,
                         contentDescription = "The Latest Car",
                         contentScale = ContentScale.Crop

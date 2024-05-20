@@ -1,13 +1,21 @@
 plugins {
-    alias(notation = libs.plugins.com.android.application)
-    alias(notation = libs.plugins.org.jetbrains.kotlin.android)
-    alias(notation = libs.plugins.com.google.devtools.ksp)
-    alias(notation = libs.plugins.com.google.dagger.hilt.android.plugin)
-    alias(notation = libs.plugins.com.google.gms.google.services)
-    alias(notation = libs.plugins.com.google.firebase.crashlytics)
-    alias(notation = libs.plugins.com.google.firebase.performance)
-    alias(notation = libs.plugins.com.guardsquare.appsweep)
-    alias(notation = libs.plugins.com.google.android.libraries.mapsplatform.secrets.gradle.plugin)
+    // The Gradle Plugin...
+    alias(notation = libs.plugins.android.gradle.plugin)
+
+    // The Kotlin Plugin...
+    alias(notation = libs.plugins.android.kotlin.plugin)
+
+    // The Security Plugin (AppSweep)...
+    alias(notation = libs.plugins.appsweep)
+
+    // The Compiler Plugin Developer (KSP)...
+    alias(notation = libs.plugins.ksp)
+
+    // The Google Plugins...
+    //alias(notation = libs.plugins.gms.google.services)
+    //alias(notation = libs.plugins.firebase.crashlytics)
+    alias(notation = libs.plugins.secrets.gradle.plugin)
+    //alias(notation = libs.plugins.firebase.performance)
 }
 
 android {
@@ -49,7 +57,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompilerVersion.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeVersion.get()
     }
     packaging {
         resources {
@@ -60,6 +68,20 @@ android {
 
 dependencies {
 
+    // The Android Libraries (Kotlin)...
+    implementation(dependencyNotation = libs.androidx.core.ktx)
+    implementation(dependencyNotation = libs.androidx.lifecycle.runtime.ktx)
+    implementation(dependencyNotation = libs.androidx.core.splashscreen)
+
+    // The Jetpack Compose Libraries...
+    implementation(dependencyNotation = libs.androidx.activity.compose)
+    implementation(dependencyNotation = platform(libs.androidx.compose.bom))
+    implementation(dependencyNotation = libs.androidx.compose.ui.ui)
+    implementation(dependencyNotation = libs.androidx.compose.ui.graphics)
+    implementation(dependencyNotation = libs.androidx.compose.ui.tooling.preview)
+    implementation(dependencyNotation = libs.androidx.compose.material3)
+    implementation(dependencyNotation = libs.lifecycle.runtime.compose)
+
     // Firebase...
     implementation(dependencyNotation = platform(libs.firebase.bom))
     implementation(dependencyNotation = libs.firebase.cloud.firestore)
@@ -68,64 +90,49 @@ dependencies {
     implementation(dependencyNotation = libs.firebase.performance)
     implementation(dependencyNotation = libs.firebase.appcheck.playintegrity)
 
-    // Splash Screen API...
-    implementation(dependencyNotation = libs.androidx.core.splashscreen)
-
-    // Dagger-Hilt...
-    implementation(dependencyNotation = libs.hilt.android)
-    "ksp"(dependencyNotation = libs.hilt.android.compiler)
-    implementation(dependencyNotation = libs.androidx.hilt.navigation.compose)
-
-    // Navigation...
+    // The Navigation Library (Jetpack Compose)...
     implementation(dependencyNotation = libs.androidx.navigation.compose)
 
-    // App Compat...
-    implementation(dependencyNotation = libs.appcompat)
+    // The Dependency Injection Library (Koin)...
+    implementation(dependencyNotation = libs.koin.androidx.compose)
 
-    // Room...
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    "ksp"(libs.room.compiler)
-
-    // Swipe To Refresh (Accompanist)...
-    implementation(dependencyNotation = libs.accompanist.swiperefresh)
-
-    // Glide...
-    implementation(dependencyNotation = libs.com.github.bumptech.glide.compose)
-
-    // ExoPlayer (Media3)...
-    implementation(dependencyNotation = libs.androidx.media3.exoplayer)
-
-    // Timber...
+    // The Logging Library (Timber)...
     implementation(dependencyNotation = libs.timber)
 
-    // Gemini API...
+    // The Memory Leak Detection Library (LeakCanary)...
+    debugImplementation(dependencyNotation = libs.leak.canary)
+
+    // The Local Storage Library (Room)...
+    implementation(dependencyNotation = libs.androidx.room.runtime)
+    implementation(dependencyNotation = libs.androidx.room.ktx)
+    "ksp"(dependencyNotation = libs.androidx.room.compiler)
+
+    // The Image Loading Library (Coil)...
+    implementation(dependencyNotation = libs.coil)
+
+    // The Kotlin Coroutines Library...
+    implementation(dependencyNotation = libs.kotlinx.coroutines.core)
+    implementation(dependencyNotation = libs.kotlinx.coroutines.android)
+
+    // The Gemini API...
     implementation(dependencyNotation = libs.gemini.api)
 
-    // Android...
-    implementation(dependencyNotation = libs.androidx.core.ktx)
-    implementation(dependencyNotation = libs.androidx.lifecycle.runtime.ktx)
-    implementation(dependencyNotation = libs.lifecycle.runtime.compose)
-    implementation(dependencyNotation = libs.androidx.activity.compose)
-    implementation(dependencyNotation = platform(libs.androidx.compose.bom))
-    implementation(dependencyNotation = libs.compose.ui)
-    implementation(dependencyNotation = libs.compose.ui.graphics)
-    implementation(dependencyNotation = libs.compose.ui.tooling.preview)
-    implementation(dependencyNotation = libs.material)
-    implementation(dependencyNotation = libs.material3)
+    // The Exoplayer Library (Media3)...
+    implementation(dependencyNotation = libs.androidx.media3.exoplayer)
 
-    // Testing...
-    testImplementation(dependencyNotation = libs.robolectric)
-    testImplementation(dependencyNotation = libs.kotlinx.coroutines.test)
-    testImplementation(dependencyNotation = libs.mockK)
+    // The Testing Libraries...
     testImplementation(dependencyNotation = libs.junit)
-    androidTestImplementation(dependencyNotation = libs.hilt.testing)
-    androidTestImplementation(dependencyNotation = libs.androidx.junit)
-    androidTestImplementation(dependencyNotation = libs.androidx.espresso.core)
+    testImplementation(dependencyNotation = libs.robolectric)
+    testImplementation(dependencyNotation = libs.mockK)
+    testImplementation(dependencyNotation = libs.kotlinx.coroutines.test)
+    testImplementation(dependencyNotation = libs.koin.test)
+    testImplementation(dependencyNotation = libs.koin.test.junit)
+    testImplementation(dependencyNotation = libs.androidx.room.testing)
+    androidTestImplementation(dependencyNotation = libs.androidx.test.ext.junit)
+    androidTestImplementation(dependencyNotation = libs.androidx.test.espresso.core)
     androidTestImplementation(dependencyNotation = platform(libs.androidx.compose.bom))
-    androidTestImplementation(dependencyNotation = libs.compose.ui.test.junit4)
-    debugImplementation(dependencyNotation = libs.compose.ui.tooling)
-    debugImplementation(dependencyNotation = libs.compose.ui.test.manifest)
-    debugImplementation(dependencyNotation = libs.leakCanary)
+    androidTestImplementation(dependencyNotation = libs.androidx.compose.ui.test.junit4)
+    debugImplementation(dependencyNotation = libs.androidx.compose.ui.tooling)
+    debugImplementation(dependencyNotation = libs.androidx.compose.ui.test.manifest)
 
 }

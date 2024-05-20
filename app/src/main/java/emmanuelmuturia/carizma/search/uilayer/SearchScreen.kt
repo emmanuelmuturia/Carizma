@@ -28,21 +28,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
-import emmanuelmuturia.carizma.theme.CarizmaWhite
-import emmanuelmuturia.carizma.theme.Caveat
+import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaWhite
+import emmanuelmuturia.carizma.commons.uilayer.theme.Caveat
+import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SearchScreen(navigateBack: () -> Unit, navigateToCar: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        val searchScreenViewModel: SearchScreenViewModel = hiltViewModel()
+        val searchScreenViewModel: SearchScreenViewModel = koinViewModel()
 
         var searchItem by rememberSaveable { mutableStateOf(value = "") }
 
@@ -84,7 +82,7 @@ fun SearchScreen(navigateBack: () -> Unit, navigateToCar: () -> Unit) {
                         .height(height = 250.dp), // Adjust the height as needed
                     elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
                 ) {
-                    GlideImage(
+                    AsyncImage(
                         model = result.firstOrNull()?.carImage,
                         contentDescription = "Movie Poster",
                         contentScale = ContentScale.Crop,

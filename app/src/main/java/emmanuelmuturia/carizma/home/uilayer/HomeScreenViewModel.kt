@@ -3,7 +3,6 @@ package emmanuelmuturia.carizma.home.uilayer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.home.domainlayer.repository.HomeRepository
@@ -12,10 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class HomeScreenViewModel (
     application: Application,
     private val homeRepository: HomeRepository
 ): AndroidViewModel(application = application) {
