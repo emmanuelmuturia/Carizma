@@ -18,7 +18,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +49,11 @@ fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
 
     val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
 
-    val car = homeScreenViewModel.getCarById(carId = carId)
+    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+
+    LaunchedEffect(key1 = carId) {
+        car = homeScreenViewModel.getCarById(carId = carId)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -55,16 +63,12 @@ fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
             modifier = Modifier.fillMaxSize()
         ) {
 
-            if (car != null) {
-                CarizmaHeader(navigateBack = navigateBack, headerTitle = car.carName)
-            }
+            car?.let { CarizmaHeader(navigateBack = navigateBack, headerTitle = it.carName) }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 item {
-                    if (car != null) {
-                        CarDetails(car = car, carScreenViewModel = carScreenViewModel)
-                    }
+                    car?.let { CarDetails(car = it, carScreenViewModel = carScreenViewModel) }
                 }
 
             }

@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -47,9 +48,13 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
 
     val playerScreenViewModel: PlayerScreenViewModel = koinViewModel()
 
-    val car = homeScreenViewModel.getCarById(carId = carId)
-
     var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
+
+    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+
+    LaunchedEffect(key1 = carId) {
+        car = homeScreenViewModel.getCarById(carId = carId)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -68,9 +73,7 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
             ) {
 
                 item {
-                    if (car != null) {
-                        PlayerCar(car = car, navController = navController)
-                    }
+                    car?.let { PlayerCar(car = it, navController = navController) }
                 }
 
                 item {
@@ -86,10 +89,10 @@ fun PlayerScreen(navController: NavHostController, carId: Int?) {
                 }
 
                 item {
-                    if (car != null) {
+                    car?.let {
                         PlayerControls(
                             playerScreenViewModel = playerScreenViewModel,
-                            car = car,
+                            car = it,
                             isPlaying = isPlaying,
                             togglePlayPause = { isPlaying = !isPlaying }
                         )
@@ -169,7 +172,12 @@ fun PlayerAudioBar() {
 
 
 @Composable
-fun PlayerControls(playerScreenViewModel: PlayerScreenViewModel, car: Car, isPlaying: Boolean, togglePlayPause: () -> Unit) {
+fun PlayerControls(
+    playerScreenViewModel: PlayerScreenViewModel,
+    car: Car,
+    isPlaying: Boolean,
+    togglePlayPause: () -> Unit
+) {
 
     Row(
         modifier = Modifier
