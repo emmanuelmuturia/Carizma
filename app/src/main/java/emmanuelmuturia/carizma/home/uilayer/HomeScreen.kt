@@ -1,5 +1,6 @@
 package emmanuelmuturia.carizma.home.uilayer
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,23 +25,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBottomNavigationBar
 import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
 import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
-import org.koin.androidx.compose.koinViewModel
 import java.util.Calendar
 
 @Composable
@@ -48,12 +49,11 @@ fun HomeScreen(
     navigateToHomeScreen: () -> Unit,
     navigateToSearchScreen: () -> Unit,
     navigateToGarageScreen: () -> Unit,
-    navController: NavHostController
+    navigateToPlayerScreen: (Int) -> Unit,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
 
-    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
-    val carList by homeScreenViewModel.carListState.collectAsState()
-    val carizmaState by homeScreenViewModel.carizmaState.collectAsState()
+    val carizmaState by homeScreenViewModel.carizmaState.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -67,54 +67,13 @@ fun HomeScreen(
 
             is CarizmaState.Loading -> LoadingScreen()
 
-            else -> Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                HomeScreenHeader()
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(weight = 1f)
-                        .padding(bottom = 7.dp)
-                ) {
-
-                    items(items = carList) { car ->
-                        HighlightCar(car = car, navController = navController)
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(height = 21.dp))
-                    }
-
-                    item {
-
-                        Text(
-                            modifier = Modifier.padding(start = 14.dp),
-                            text = "Formula One (F1)",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-
-                        Spacer(modifier = Modifier.height(height = 3.5.dp))
-
-                        LazyRow {
-                            items(items = carList) { car ->
-                                CarList(car = car, navController = navController)
-                            }
-                        }
-                    }
-
-                }
-
-                CarizmaBottomNavigationBar(
-                    navigateToHomeScreen = navigateToHomeScreen,
-                    navigateToSearchScreen = navigateToSearchScreen,
-                    navigateToGarageScreen = navigateToGarageScreen
-                )
-
-            }
+            is CarizmaState.Success -> HomeScreenElements(
+                navigateToHomeScreen = navigateToHomeScreen,
+                navigateToSearchScreen = navigateToSearchScreen,
+                navigateToGarageScreen = navigateToGarageScreen,
+                navigateToPlayerScreen = navigateToPlayerScreen,
+                carizmaState = carizmaState
+            )
 
         }
 
@@ -122,9 +81,73 @@ fun HomeScreen(
 
 }
 
+@Composable
+fun HomeScreenElements(
+    navigateToHomeScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
+    navigateToGarageScreen: () -> Unit,
+    navigateToPlayerScreen: (Int) -> Unit,
+    carizmaState: CarizmaState<List<Car>>
+) {
+
+    val carList = (carizmaState as CarizmaState.Success<List<Car>>).data
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        HomeScreenHeader()
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(weight = 1f)
+                .padding(bottom = 7.dp)
+        ) {
+
+            items(items = carList) { car ->
+                HighlightCar(car = car, navigateToPlayerScreen = { navigateToPlayerScreen(car.carId) })
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(height = 21.dp))
+            }
+
+            item {
+
+                Text(
+                    modifier = Modifier.padding(start = 14.dp),
+                    text = "Formula One (F1)",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Spacer(modifier = Modifier.height(height = 3.5.dp))
+
+                LazyRow {
+                    items(items = carList) { car ->
+                        CarList(car = car, navigateToPlayerScreen = { navigateToPlayerScreen(car.carId) })
+                    }
+                }
+            }
+
+        }
+
+        CarizmaBottomNavigationBar(
+            navigateToHomeScreen = navigateToHomeScreen,
+            navigateToSearchScreen = navigateToSearchScreen,
+            navigateToGarageScreen = navigateToGarageScreen
+        )
+
+    }
+    
+}
+
 
 @Composable
 private fun HomeScreenHeader() {
+
+    val context = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -135,7 +158,7 @@ private fun HomeScreenHeader() {
     ) {
 
         Text(
-            text = displayGreeting(),
+            text = displayGreeting(context = context),
             style = MaterialTheme.typography.headlineLarge
         )
 
@@ -169,7 +192,7 @@ private fun HomeScreenHeader() {
 }
 
 @Composable
-fun HighlightCar(car: Car, navController: NavHostController) {
+fun HighlightCar(car: Car, navigateToPlayerScreen: (Int) -> Unit) {
 
     Row(
         modifier = Modifier
@@ -183,7 +206,7 @@ fun HighlightCar(car: Car, navController: NavHostController) {
             modifier = Modifier
                 .height(height = 140.dp)
                 .width(width = 182.dp)
-                .clickable { navController.navigate(route = "playerScreen/${car.carId}") },
+                .clickable(onClick = { navigateToPlayerScreen(car.carId) }),
             shape = RoundedCornerShape(size = 21.dp)
         ) {
 
@@ -212,8 +235,8 @@ fun HighlightCar(car: Car, navController: NavHostController) {
 
 @Composable
 fun CarList(
-    car: Car?,
-    navController: NavHostController
+    car: Car,
+    navigateToPlayerScreen: (Int) -> Unit
 ) {
 
     Column(
@@ -225,19 +248,17 @@ fun CarList(
             modifier = Modifier
                 .height(height = 140.dp)
                 .width(width = 140.dp)
-                .clickable { navController.navigate(route = "playerScreen/${car?.carId}") },
+                .clickable(onClick = { navigateToPlayerScreen(car.carId) }),
             shape = RoundedCornerShape(size = 21.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-                if (car != null) {
-                    AsyncImage(
-                        model = car.carImage,
-                        contentDescription = "The Latest Car",
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                AsyncImage(
+                    model = car.carImage,
+                    contentDescription = "The Latest Car",
+                    contentScale = ContentScale.Crop
+                )
 
             }
 
@@ -245,15 +266,11 @@ fun CarList(
 
         Spacer(modifier = Modifier.height(height = 7.dp))
 
-        if (car != null) {
-
-            Text(
-                text = car.carName,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
-            )
-
-        }
+        Text(
+            text = car.carName,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(modifier = Modifier.height(height = 21.dp))
 
@@ -262,10 +279,10 @@ fun CarList(
 }
 
 
-private fun displayGreeting(): String {
+private fun displayGreeting(context: Context): String {
     return when (Calendar.getInstance()[Calendar.HOUR_OF_DAY]) {
-        in 0..11 -> "Good Morning!" // 0 to 11 is considered morning
-        in 12..16 -> "Good Afternoon!" // 12 to 16 is considered afternoon
-        else -> "Good Evening!" // After 16 is considered evening
+        in 0..11 -> context.getString(R.string.good_morning)
+        in 12..16 -> context.getString(R.string.good_afternoon)
+        else -> context.getString(R.string.good_evening)
     }
 }

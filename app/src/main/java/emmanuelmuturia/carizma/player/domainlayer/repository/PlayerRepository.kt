@@ -1,9 +1,10 @@
 package emmanuelmuturia.carizma.player.domainlayer.repository
 
-import android.content.Context
-import androidx.media3.common.MediaItem
+import emmanuelmuturia.carizma.car.domainlayer.model.Car
 
 interface PlayerRepository {
+
+    suspend fun getCarById(carId: Int): Car?
 
     suspend fun playCarAudio(carAudio: String)
 

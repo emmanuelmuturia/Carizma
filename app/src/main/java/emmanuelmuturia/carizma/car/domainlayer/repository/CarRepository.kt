@@ -5,6 +5,8 @@ import emmanuelmuturia.carizma.car.domainlayer.model.Car
 
 interface CarRepository {
 
+    suspend fun getCarById(carId: Int): Car?
+
     suspend fun getResponse(car: Car?): GenerateContentResponse
 
     suspend fun getResult(car: Car?): String?

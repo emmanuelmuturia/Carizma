@@ -13,9 +13,9 @@ plugins {
     alias(notation = libs.plugins.ksp) apply false
 
     // The Google Plugins...
-    //alias(notation = libs.plugins.gms.google.services) apply false
-    //alias(notation = libs.plugins.firebase.crashlytics) apply false
+    alias(notation = libs.plugins.gms.google.services) apply false
+    alias(notation = libs.plugins.firebase.crashlytics) apply false
     alias(notation = libs.plugins.secrets.gradle.plugin) apply false
-    //alias(notation = libs.plugins.firebase.performance) apply false
+    alias(notation = libs.plugins.firebase.performance) apply false
 
 }
