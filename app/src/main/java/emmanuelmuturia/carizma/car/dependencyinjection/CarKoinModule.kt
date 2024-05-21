@@ -16,7 +16,7 @@ val carKoinModule = module {
     }
 
     single<CarRepository> {
-        CarRepositoryImplementation(generativeModel = get())
+        CarRepositoryImplementation(generativeModel = get(), homeRepository = get())
     }
 
     viewModel {

@@ -2,6 +2,7 @@ package emmanuelmuturia.carizma.player.uilayer
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
@@ -14,8 +15,7 @@ import kotlinx.coroutines.launch
 
 class PlayerScreenViewModel (
     application: Application,
-    private val playerRepository: PlayerRepository,
-    private val homeRepository: HomeRepository
+    private val playerRepository: PlayerRepository
 ): AndroidViewModel(application = application) {
 
     private var _carizmaCar: MutableStateFlow<Car?> = MutableStateFlow(value = null)
@@ -45,13 +45,10 @@ class PlayerScreenViewModel (
         }
     }
 
-    fun getCarById(carId: Int?): Car? {
+    fun getCarById(carId: Int) {
         viewModelScope.launch {
-            homeRepository.getCars().collect { carList ->
-                _carizmaCar.value = carList.find { it.carId == carId }
-            }
+            _carizmaCar.value = playerRepository.getCarById(carId = carId)
         }
-        return _carizmaCar.value
     }
 
 }

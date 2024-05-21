@@ -47,11 +47,13 @@ fun CarScreen(
     carId: Int?
 ) {
 
-    val car by carScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
-
     LaunchedEffect(key1 = carId) {
-        carScreenViewModel.getCarById(carId = carId)
+        if (carId != null) {
+            carScreenViewModel.getCarById(carId = carId)
+        }
     }
+
+    val car by carScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
 

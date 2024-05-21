@@ -2,6 +2,7 @@ package emmanuelmuturia.carizma.car.uilayer
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.car.domainlayer.repository.CarRepository
@@ -41,13 +42,12 @@ class CarScreenViewModel (
         }
     }
 
-    fun getCarById(carId: Int?): Car? {
+    fun getCarById(carId: Int) {
         viewModelScope.launch {
             homeRepository.getCars().collect { carList ->
                 _carizmaCar.value = carList.find { it.carId == carId }
             }
         }
-        return _carizmaCar.value
     }
 
 }

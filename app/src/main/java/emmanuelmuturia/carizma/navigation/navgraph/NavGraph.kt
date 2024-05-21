@@ -48,6 +48,7 @@ fun NavGraph(navController: NavHostController) {
                 navigateToPlayerScreen = { carId ->
                     navController.navigate(
                         route = "playerScreen/$carId"
+                        //route = Routes.PlayerScreen.getRouteWithArgument(carId = carId)
                     )
                 },
                 homeScreenViewModel = homeScreenViewModel
@@ -59,14 +60,19 @@ fun NavGraph(navController: NavHostController) {
                 type = NavType.IntType
             }
         )) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getInt("carId")?.let {
                 PlayerScreen(
                     navigateBack = { navController.popBackStack() },
-                    navigateToCarScreen = { carId -> navController.navigate(route = "carScreen/$carId") },
+                    navigateToCarScreen = { carId ->
+                        navController.navigate(
+                            route = "carScreen/$carId"
+                            /*route = Routes.CarScreen.getRouteWithArgument(
+                                carId = carId
+                            )*/
+                        )
+                    },
                     playerScreenViewModel = playerScreenViewModel,
-                    carId = it
+                    carId = navBackStackEntry.arguments?.getInt("carId")
                 )
-            }
         }
 
         composable(route = Routes.CarScreen.route, arguments = listOf(

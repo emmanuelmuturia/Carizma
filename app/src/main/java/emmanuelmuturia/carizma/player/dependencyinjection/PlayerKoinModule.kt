@@ -4,21 +4,22 @@ import emmanuelmuturia.carizma.player.datalayer.repository.PlayerRepositoryImple
 import emmanuelmuturia.carizma.player.domainlayer.repository.PlayerRepository
 import emmanuelmuturia.carizma.player.uilayer.PlayerScreenViewModel
 import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val playerKoinModule = module {
 
     single<PlayerRepository> {
         PlayerRepositoryImplementation(
-            context = androidApplication().applicationContext
+            context = androidApplication().applicationContext,
+            homeRepository = get()
         )
     }
 
-    single<PlayerScreenViewModel> {
+    viewModel {
         PlayerScreenViewModel(
             application = androidApplication(),
-            playerRepository = get(),
-            homeRepository = get()
+            playerRepository = get()
         )
     }
 

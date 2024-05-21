@@ -35,41 +35,42 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
-import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
-import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
-import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaWhite
 
 @Composable
 fun PlayerScreen(
     navigateBack: () -> Unit,
     navigateToCarScreen: (Int) -> Unit,
-    carId: Int,
-    playerScreenViewModel: PlayerScreenViewModel
+    playerScreenViewModel: PlayerScreenViewModel,
+    carId: Int?
 ) {
+
+    LaunchedEffect(key1 = carId) {
+        if (carId != null) {
+            playerScreenViewModel.getCarById(carId = carId)
+        }
+    }
 
     var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
 
-    val car by playerScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = carId) {
-        playerScreenViewModel.getCarById(carId = carId)
-    }
+    val carState by playerScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         CarizmaBackgroundImage()
 
-        PlayerScreenElements(
-            navigateBack = navigateBack,
-            car = car,
-            navigateToCarScreen = { navigateToCarScreen(carId) },
-            isPlaying = isPlaying,
-            togglePlayPause = { isPlaying = !isPlaying },
-            playerScreenViewModel = playerScreenViewModel
-        )
+        carState?.let { car ->
+            PlayerScreenElements(
+                navigateBack = navigateBack,
+                car = car,
+                navigateToCarScreen = { navigateToCarScreen(car.carId) },
+                isPlaying = isPlaying,
+                togglePlayPause = { isPlaying = !isPlaying },
+                playerScreenViewModel = playerScreenViewModel
+            )
+        }
 
     }
 
