@@ -31,87 +31,112 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
+import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
+import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaWhite
-import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PlayerScreen(navController: NavHostController, carId: Int?) {
-
-    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
-
-    val playerScreenViewModel: PlayerScreenViewModel = koinViewModel()
+fun PlayerScreen(
+    navigateBack: () -> Unit,
+    navigateToCarScreen: (Int) -> Unit,
+    carId: Int,
+    playerScreenViewModel: PlayerScreenViewModel
+) {
 
     var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
 
-    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+    val car by playerScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = carId) {
-        car = homeScreenViewModel.getCarById(carId = carId)
+        playerScreenViewModel.getCarById(carId = carId)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         CarizmaBackgroundImage()
 
-        Column(
-            modifier = Modifier.fillMaxSize()
+        PlayerScreenElements(
+            navigateBack = navigateBack,
+            car = car,
+            navigateToCarScreen = { navigateToCarScreen(carId) },
+            isPlaying = isPlaying,
+            togglePlayPause = { isPlaying = !isPlaying },
+            playerScreenViewModel = playerScreenViewModel
+        )
+
+    }
+
+}
+
+@Composable
+private fun PlayerScreenElements(
+    navigateBack: () -> Unit,
+    car: Car?,
+    navigateToCarScreen: (Int) -> Unit,
+    isPlaying: Boolean,
+    togglePlayPause: () -> Unit,
+    playerScreenViewModel: PlayerScreenViewModel
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        CarizmaHeader(navigateBack = navigateBack, headerTitle = "Player")
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 7.dp)
         ) {
 
-            CarizmaHeader(navigateBack = { navController.popBackStack() }, headerTitle = "Player")
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 7.dp)
-            ) {
-
-                item {
-                    car?.let { PlayerCar(car = it, navController = navController) }
+            item {
+                car?.let { car ->
+                    PlayerCar(
+                        car = car,
+                        navigateToCarScreen = { navigateToCarScreen(car.carId) })
                 }
+            }
 
-                item {
-                    Spacer(modifier = Modifier.height(height = 21.dp))
+            item {
+                Spacer(modifier = Modifier.height(height = 21.dp))
+            }
+
+            item {
+                PlayerAudioBar()
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(height = 21.dp))
+            }
+
+            item {
+                car?.let {
+                    PlayerControls(
+                        playerScreenViewModel = playerScreenViewModel,
+                        car = it,
+                        isPlaying = isPlaying,
+                        togglePlayPause = togglePlayPause
+                    )
                 }
-
-                item {
-                    PlayerAudioBar()
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(height = 21.dp))
-                }
-
-                item {
-                    car?.let {
-                        PlayerControls(
-                            playerScreenViewModel = playerScreenViewModel,
-                            car = it,
-                            isPlaying = isPlaying,
-                            togglePlayPause = { isPlaying = !isPlaying }
-                        )
-                    }
-                }
-
             }
 
         }
 
     }
-
 }
 
 
 @Composable
 fun PlayerCar(
     car: Car,
-    navController: NavHostController
+    navigateToCarScreen: (Int) -> Unit
 ) {
 
     Column(
@@ -124,18 +149,16 @@ fun PlayerCar(
             modifier = Modifier
                 .height(height = 280.dp)
                 .width(width = 280.dp)
-                .clickable {
-                    navController.navigate(route = "carScreen/${car.carId}")
-                }, shape = RoundedCornerShape(size = 21.dp)
+                .clickable(onClick = { navigateToCarScreen(car.carId) }),
+            shape = RoundedCornerShape(size = 21.dp)
         ) {
 
             Box(modifier = Modifier.fillMaxSize()) {
 
-
                 AsyncImage(
                     model = car.carImage,
                     contentDescription = "Player Car",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.FillBounds
                 )
 
             }

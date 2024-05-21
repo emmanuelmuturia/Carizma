@@ -22,7 +22,8 @@ val carKoinModule = module {
     viewModel {
         CarScreenViewModel(
             application = androidApplication(),
-            carRepository = get()
+            carRepository = get(),
+            homeRepository = get()
         )
     }
 

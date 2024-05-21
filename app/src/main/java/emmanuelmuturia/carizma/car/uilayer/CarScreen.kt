@@ -20,9 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,51 +33,61 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
+import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.commons.uilayer.state.ErrorScreen
+import emmanuelmuturia.carizma.commons.uilayer.state.LoadingScreen
 import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaOrange
-import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CarScreen(navigateBack: () -> Unit, carId: Int?) {
+fun CarScreen(
+    navigateBack: () -> Unit,
+    carScreenViewModel: CarScreenViewModel,
+    carId: Int?
+) {
 
-    val carScreenViewModel: CarScreenViewModel = koinViewModel()
-
-    val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
-
-    var car: Car? by rememberSaveable { mutableStateOf(value = null) }
+    val car by carScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = carId) {
-        car = homeScreenViewModel.getCarById(carId = carId)
+        carScreenViewModel.getCarById(carId = carId)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         CarizmaBackgroundImage()
 
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            car?.let { CarizmaHeader(navigateBack = navigateBack, headerTitle = it.carName) }
-
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-
-                item {
-                    car?.let { CarDetails(car = it, carScreenViewModel = carScreenViewModel) }
-                }
-
-            }
-
-        }
+        CarScreenElements(
+            car = car,
+            navigateBack = navigateBack,
+            carScreenViewModel = carScreenViewModel
+        )
 
     }
 
 }
 
 @Composable
-fun CarDetails(car: Car, carScreenViewModel: CarScreenViewModel) {
+private fun CarScreenElements(car: Car?, navigateBack: () -> Unit, carScreenViewModel: CarScreenViewModel) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        car?.let { CarizmaHeader(navigateBack = navigateBack, headerTitle = it.carName) }
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+            item {
+                car?.let { CarDetails(car = it, carScreenViewModel = carScreenViewModel) }
+            }
+
+        }
+
+    }
+}
+
+@Composable
+private fun CarDetails(car: Car, carScreenViewModel: CarScreenViewModel) {
 
     val carDescription by carScreenViewModel.carDescription.collectAsStateWithLifecycle()
 

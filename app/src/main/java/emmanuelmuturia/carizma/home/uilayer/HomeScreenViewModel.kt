@@ -9,8 +9,6 @@ import emmanuelmuturia.carizma.home.domainlayer.repository.HomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -38,12 +36,6 @@ class HomeScreenViewModel (
             }
 
         }
-    }
-
-    suspend fun getCarById(carId: Int?): Car? {
-        return homeRepository.getCars()
-            .map { carList -> carList.find { it.carId == carId } }
-            .firstOrNull { it != null }
     }
 
 }
