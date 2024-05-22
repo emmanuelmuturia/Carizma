@@ -1,12 +1,11 @@
 package emmanuelmuturia.carizma.player.uilayer
 
 import android.app.Application
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
-import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
-import emmanuelmuturia.carizma.home.domainlayer.repository.HomeRepository
 import emmanuelmuturia.carizma.player.domainlayer.repository.PlayerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +19,16 @@ class PlayerScreenViewModel (
 
     private var _carizmaCar: MutableStateFlow<Car?> = MutableStateFlow(value = null)
     val carizmaCar: StateFlow<Car?> = _carizmaCar.asStateFlow()
+
+    val player = playerRepository.player
+
+    val isPlaying = mutableStateOf(value = false)
+
+    val currentPosition = mutableLongStateOf(value = 0)
+
+    val sliderPosition = mutableLongStateOf(value = 0)
+
+    val totalDuration = mutableLongStateOf(value = 0)
 
     fun playCarAudio(carAudio: String) {
         viewModelScope.launch {

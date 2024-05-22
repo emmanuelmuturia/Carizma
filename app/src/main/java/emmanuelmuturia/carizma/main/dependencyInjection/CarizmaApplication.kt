@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma.main
+package emmanuelmuturia.carizma.main.dependencyInjection
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
