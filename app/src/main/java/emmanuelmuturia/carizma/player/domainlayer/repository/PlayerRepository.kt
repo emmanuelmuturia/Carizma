@@ -11,6 +11,8 @@ interface PlayerRepository {
 
     suspend fun playCarAudio(carAudio: String)
 
+    suspend fun resumeCarAudio()
+
     suspend fun pauseCarAudio()
 
     suspend fun rewindCarAudio()

@@ -33,12 +33,21 @@ class PlayerScreenViewModel (
     fun playCarAudio(carAudio: String) {
         viewModelScope.launch {
             playerRepository.playCarAudio(carAudio = carAudio)
+            isPlaying.value = true
+        }
+    }
+
+    fun resumeCarAudio() {
+        viewModelScope.launch {
+            playerRepository.resumeCarAudio()
+            isPlaying.value = true
         }
     }
 
     fun pauseCarAudio() {
         viewModelScope.launch {
             playerRepository.pauseCarAudio()
+            isPlaying.value = false
         }
     }
 

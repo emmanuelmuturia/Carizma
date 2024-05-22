@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -28,12 +27,11 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -78,13 +76,13 @@ fun PlayerScreen(
 
     val player = playerScreenViewModel.player
 
-    var isPlaying by rememberSaveable { playerScreenViewModel.isPlaying }
-
     val currentPosition = playerScreenViewModel.currentPosition
 
     val sliderPosition = playerScreenViewModel.sliderPosition
 
     val totalDuration = playerScreenViewModel.totalDuration
+
+    val currentSongIndex = rememberSaveable { mutableIntStateOf(value = 0) }
 
     LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
         delay(timeMillis = 1000)
@@ -110,14 +108,13 @@ fun PlayerScreen(
                 navigateBack = navigateBack,
                 car = car,
                 navigateToCarScreen = { navigateToCarScreen(car.carId) },
-                togglePlayPause = { isPlaying = !isPlaying },
                 playerScreenViewModel = playerScreenViewModel,
-                isPlaying = isPlaying,
                 player = player,
                 currentPosition = currentPosition,
                 sliderPosition = sliderPosition,
                 totalDuration = totalDuration,
-                carList = carList
+                carList = carList,
+                currentSongIndex = currentSongIndex
             )
         }
 
@@ -130,14 +127,13 @@ private fun PlayerScreenElements(
     navigateBack: () -> Unit,
     car: Car?,
     navigateToCarScreen: (Int) -> Unit,
-    togglePlayPause: () -> Unit,
     playerScreenViewModel: PlayerScreenViewModel,
     player: ExoPlayer,
     currentPosition: MutableState<Long>,
     sliderPosition: MutableState<Long>,
     totalDuration: MutableState<Long>,
-    isPlaying: Boolean,
-    carList: List<Car>
+    carList: List<Car>,
+    currentSongIndex: MutableIntState
 ) {
 
     Column(
@@ -157,7 +153,9 @@ private fun PlayerScreenElements(
                     PlayerCarPager(
                         carList = carList,
                         navigateToCarScreen = { navigateToCarScreen(car.carId) },
-                        player = player
+                        player = player,
+                        currentSongIndex = currentSongIndex,
+                        playerScreenViewModel = playerScreenViewModel
                     )
                 }
             }
@@ -188,9 +186,8 @@ private fun PlayerScreenElements(
                 car?.let {
                     PlayerControls(
                         playerScreenViewModel = playerScreenViewModel,
-                        car = it,
-                        isPlaying = isPlaying,
-                        togglePlayPause = togglePlayPause
+                        carList = carList,
+                        currentSongIndex = currentSongIndex
                     )
                 }
             }
@@ -206,18 +203,19 @@ private fun PlayerScreenElements(
 fun PlayerCarPager(
     carList: List<Car>,
     navigateToCarScreen: (Int) -> Unit,
-    player: ExoPlayer
+    player: ExoPlayer,
+    currentSongIndex: MutableIntState,
+    playerScreenViewModel: PlayerScreenViewModel
 ) {
 
     val pagerState = rememberPagerState(pageCount = {
         carList.size
     })
 
-    val currentSongIndex = rememberSaveable { mutableIntStateOf(value = 0) }
-
     LaunchedEffect(key1 = pagerState.currentPage) {
         currentSongIndex.intValue = pagerState.currentPage
         player.seekTo(pagerState.currentPage, 0)
+        playerScreenViewModel.playCarAudio(carAudio = carList[pagerState.currentPage].carSound)
     }
 
     LaunchedEffect(key1 = player.currentMediaItemIndex) {
@@ -309,9 +307,8 @@ fun PlayerAudioBar(
 @Composable
 fun PlayerControls(
     playerScreenViewModel: PlayerScreenViewModel,
-    car: Car,
-    isPlaying: Boolean,
-    togglePlayPause: () -> Unit
+    carList: List<Car>,
+    currentSongIndex: MutableIntState
 ) {
 
     Row(
@@ -334,17 +331,16 @@ fun PlayerControls(
         Image(
             modifier = Modifier
                 .clickable {
-                    togglePlayPause()
-                    if (isPlaying) {
+                    if (playerScreenViewModel.isPlaying.value) {
                         playerScreenViewModel.pauseCarAudio()
-                        !isPlaying
+                    } else if (playerScreenViewModel.player.currentMediaItem == null) {
+                        playerScreenViewModel.playCarAudio(carAudio = carList[currentSongIndex.intValue].carSound)
                     } else {
-                        playerScreenViewModel.playCarAudio(carAudio = car.carSound)
-                        !isPlaying
+                        playerScreenViewModel.resumeCarAudio()
                     }
                 }
                 .size(size = 42.dp),
-            painter = painterResource(id = if (isPlaying) R.drawable.pause else R.drawable.play),
+            painter = painterResource(id = if (playerScreenViewModel.isPlaying.value) R.drawable.pause else R.drawable.play),
             contentDescription = "Play/Pause Button",
             contentScale = ContentScale.Crop
         )

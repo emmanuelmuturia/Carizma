@@ -27,17 +27,20 @@ class PlayerRepositoryImplementation(
         player.play()
     }
 
+    override suspend fun resumeCarAudio() {
+        player.playWhenReady = true
+    }
+
     override suspend fun pauseCarAudio() {
-        player.pause()
-        player.release()
+        player.playWhenReady = false
     }
 
     override suspend fun rewindCarAudio() {
-        player.seekBack()
+        player.seekTo(player.currentPosition - 1000)
     }
 
     override suspend fun fastForwardCarAudio() {
-        player.seekForward()
+        player.seekTo(player.currentPosition + 1000)
     }
 
 }
