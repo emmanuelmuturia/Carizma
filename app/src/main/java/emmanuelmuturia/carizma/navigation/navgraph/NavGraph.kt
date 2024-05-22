@@ -71,7 +71,8 @@ fun NavGraph(navController: NavHostController) {
                         )
                     },
                     playerScreenViewModel = playerScreenViewModel,
-                    carId = navBackStackEntry.arguments?.getInt("carId")
+                    carId = navBackStackEntry.arguments?.getInt("carId"),
+                    homeScreenViewModel = homeScreenViewModel
                 )
         }
 

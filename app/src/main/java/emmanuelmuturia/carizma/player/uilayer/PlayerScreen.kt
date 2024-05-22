@@ -1,10 +1,13 @@
 package emmanuelmuturia.carizma.player.uilayer
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +30,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -36,15 +48,19 @@ import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
+import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
+import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
 import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @Composable
 fun PlayerScreen(
     navigateBack: () -> Unit,
     navigateToCarScreen: (Int) -> Unit,
     playerScreenViewModel: PlayerScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     carId: Int?
 ) {
 
@@ -54,11 +70,15 @@ fun PlayerScreen(
         }
     }
 
+    val carizmaState by homeScreenViewModel.carizmaState.collectAsStateWithLifecycle()
+
+    val carList = (carizmaState as CarizmaState.Success<List<Car>>).data
+
     val carState by playerScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
 
     val player = playerScreenViewModel.player
 
-    var isPlaying = playerScreenViewModel.isPlaying.value
+    var isPlaying by rememberSaveable { playerScreenViewModel.isPlaying }
 
     val currentPosition = playerScreenViewModel.currentPosition
 
@@ -96,7 +116,8 @@ fun PlayerScreen(
                 player = player,
                 currentPosition = currentPosition,
                 sliderPosition = sliderPosition,
-                totalDuration = totalDuration
+                totalDuration = totalDuration,
+                carList = carList
             )
         }
 
@@ -115,7 +136,8 @@ private fun PlayerScreenElements(
     currentPosition: MutableState<Long>,
     sliderPosition: MutableState<Long>,
     totalDuration: MutableState<Long>,
-    isPlaying: Boolean
+    isPlaying: Boolean,
+    carList: List<Car>
 ) {
 
     Column(
@@ -132,9 +154,11 @@ private fun PlayerScreenElements(
 
             item {
                 car?.let { car ->
-                    PlayerCar(
-                        car = car,
-                        navigateToCarScreen = { navigateToCarScreen(car.carId) })
+                    PlayerCarPager(
+                        carList = carList,
+                        navigateToCarScreen = { navigateToCarScreen(car.carId) },
+                        player = player
+                    )
                 }
             }
 
@@ -177,46 +201,79 @@ private fun PlayerScreenElements(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlayerCar(
-    car: Car,
-    navigateToCarScreen: (Int) -> Unit
+fun PlayerCarPager(
+    carList: List<Car>,
+    navigateToCarScreen: (Int) -> Unit,
+    player: ExoPlayer
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    val pagerState = rememberPagerState(pageCount = {
+        carList.size
+    })
 
-        Card(
+    val currentSongIndex = rememberSaveable { mutableIntStateOf(value = 0) }
+
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        currentSongIndex.intValue = pagerState.currentPage
+        player.seekTo(pagerState.currentPage, 0)
+    }
+
+    LaunchedEffect(key1 = player.currentMediaItemIndex) {
+        currentSongIndex.intValue = player.currentMediaItemIndex
+        pagerState.animateScrollToPage(
+            page = currentSongIndex.intValue,
+            animationSpec = tween(durationMillis = 500)
+        )
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 65.dp),
+        modifier = Modifier
+    ) { page ->
+
+        val pageOffset =
+            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+
+        val scaleFactor = 0.75f + (1f - 0.75f) * (1f - pageOffset.absoluteValue)
+
+        Column(
             modifier = Modifier
-                .height(height = 280.dp)
-                .width(width = 280.dp)
-                .clickable(onClick = { navigateToCarScreen(car.carId) }),
-            shape = RoundedCornerShape(size = 21.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .graphicsLayer {
+                    scaleX = scaleFactor
+                    scaleY = scaleFactor
+                }
+                .alpha(
+                    scaleFactor.coerceIn(minimumValue = 0f, maximumValue = 1f)
+                )
+                .padding(10.dp)
+                .clip(RoundedCornerShape(size = 16.dp))) {
 
                 AsyncImage(
-                    model = car.carImage,
+                    modifier = Modifier.clickable(onClick = { navigateToCarScreen(carList[page].carId) }),
+                    model = carList[page].carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.FillBounds
                 )
 
             }
 
+            Spacer(modifier = Modifier.width(width = 7.dp))
+
+            Text(
+                text = carList[page].carName,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+
         }
-
-        Spacer(modifier = Modifier.width(width = 7.dp))
-
-
-        Text(
-            text = car.carName,
-            style = MaterialTheme.typography.titleLarge
-        )
-
 
     }
 
