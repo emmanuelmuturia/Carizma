@@ -1,10 +1,13 @@
 package emmanuelmuturia.carizma.player.uilayer
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,36 +17,48 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import emmanuelmuturia.carizma.R
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
+import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
-import emmanuelmuturia.carizma.commons.uilayer.theme.CarizmaWhite
+import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
+import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @Composable
 fun PlayerScreen(
     navigateBack: () -> Unit,
     navigateToCarScreen: (Int) -> Unit,
     playerScreenViewModel: PlayerScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel,
     carId: Int?
 ) {
 
@@ -53,9 +68,36 @@ fun PlayerScreen(
         }
     }
 
-    var isPlaying: Boolean by rememberSaveable { mutableStateOf(value = false) }
+    val carizmaState by homeScreenViewModel.carizmaState.collectAsStateWithLifecycle()
+
+    val carList = (carizmaState as CarizmaState.Success<List<Car>>).data
 
     val carState by playerScreenViewModel.carizmaCar.collectAsStateWithLifecycle()
+
+    val player = playerScreenViewModel.player
+
+    val currentPosition = playerScreenViewModel.currentPosition
+
+    val sliderPosition = playerScreenViewModel.sliderPosition
+
+    val totalDuration = playerScreenViewModel.totalDuration
+
+    val currentSongIndex = rememberSaveable { mutableIntStateOf(value = 0) }
+
+    LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
+        delay(timeMillis = 1000)
+        currentPosition.longValue = player.currentPosition
+    }
+
+    LaunchedEffect(key1 = currentPosition.longValue) {
+        sliderPosition.longValue = currentPosition.longValue
+    }
+
+    LaunchedEffect(key1 = player.duration) {
+        if (player.duration > 0) {
+            totalDuration.longValue = player.duration
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -66,9 +108,13 @@ fun PlayerScreen(
                 navigateBack = navigateBack,
                 car = car,
                 navigateToCarScreen = { navigateToCarScreen(car.carId) },
-                isPlaying = isPlaying,
-                togglePlayPause = { isPlaying = !isPlaying },
-                playerScreenViewModel = playerScreenViewModel
+                playerScreenViewModel = playerScreenViewModel,
+                player = player,
+                currentPosition = currentPosition,
+                sliderPosition = sliderPosition,
+                totalDuration = totalDuration,
+                carList = carList,
+                currentSongIndex = currentSongIndex
             )
         }
 
@@ -81,10 +127,15 @@ private fun PlayerScreenElements(
     navigateBack: () -> Unit,
     car: Car?,
     navigateToCarScreen: (Int) -> Unit,
-    isPlaying: Boolean,
-    togglePlayPause: () -> Unit,
-    playerScreenViewModel: PlayerScreenViewModel
+    playerScreenViewModel: PlayerScreenViewModel,
+    player: ExoPlayer,
+    currentPosition: MutableState<Long>,
+    sliderPosition: MutableState<Long>,
+    totalDuration: MutableState<Long>,
+    carList: List<Car>,
+    currentSongIndex: MutableIntState
 ) {
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -99,9 +150,13 @@ private fun PlayerScreenElements(
 
             item {
                 car?.let { car ->
-                    PlayerCar(
-                        car = car,
-                        navigateToCarScreen = { navigateToCarScreen(car.carId) })
+                    PlayerCarPager(
+                        carList = carList,
+                        navigateToCarScreen = { navigateToCarScreen(car.carId) },
+                        player = player,
+                        currentSongIndex = currentSongIndex,
+                        playerScreenViewModel = playerScreenViewModel
+                    )
                 }
             }
 
@@ -110,7 +165,17 @@ private fun PlayerScreenElements(
             }
 
             item {
-                PlayerAudioBar()
+                PlayerAudioBar(
+                    value = sliderPosition.value.toFloat(),
+                    onValueChange = {
+                        sliderPosition.value = it.toLong()
+                    },
+                    onValueChangeFinished = {
+                        currentPosition.value = sliderPosition.value
+                        player.seekTo(sliderPosition.value)
+                    },
+                    audioDuration = totalDuration.value.toFloat()
+                )
             }
 
             item {
@@ -121,9 +186,8 @@ private fun PlayerScreenElements(
                 car?.let {
                     PlayerControls(
                         playerScreenViewModel = playerScreenViewModel,
-                        car = it,
-                        isPlaying = isPlaying,
-                        togglePlayPause = togglePlayPause
+                        carList = carList,
+                        currentSongIndex = currentSongIndex
                     )
                 }
             }
@@ -134,46 +198,80 @@ private fun PlayerScreenElements(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlayerCar(
-    car: Car,
-    navigateToCarScreen: (Int) -> Unit
+fun PlayerCarPager(
+    carList: List<Car>,
+    navigateToCarScreen: (Int) -> Unit,
+    player: ExoPlayer,
+    currentSongIndex: MutableIntState,
+    playerScreenViewModel: PlayerScreenViewModel
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    val pagerState = rememberPagerState(pageCount = {
+        carList.size
+    })
 
-        Card(
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        currentSongIndex.intValue = pagerState.currentPage
+        player.seekTo(pagerState.currentPage, 0)
+        playerScreenViewModel.playCarAudio(carAudio = carList[pagerState.currentPage].carSound)
+    }
+
+    LaunchedEffect(key1 = player.currentMediaItemIndex) {
+        currentSongIndex.intValue = player.currentMediaItemIndex
+        pagerState.animateScrollToPage(
+            page = currentSongIndex.intValue,
+            animationSpec = tween(durationMillis = 500)
+        )
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 65.dp),
+        modifier = Modifier
+    ) { page ->
+
+        val pageOffset =
+            (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+
+        val scaleFactor = 0.75f + (1f - 0.75f) * (1f - pageOffset.absoluteValue)
+
+        Column(
             modifier = Modifier
-                .height(height = 280.dp)
-                .width(width = 280.dp)
-                .clickable(onClick = { navigateToCarScreen(car.carId) }),
-            shape = RoundedCornerShape(size = 21.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .graphicsLayer {
+                    scaleX = scaleFactor
+                    scaleY = scaleFactor
+                }
+                .alpha(
+                    scaleFactor.coerceIn(minimumValue = 0f, maximumValue = 1f)
+                )
+                .padding(10.dp)
+                .clip(RoundedCornerShape(size = 16.dp))) {
 
                 AsyncImage(
-                    model = car.carImage,
+                    modifier = Modifier.clickable(onClick = { navigateToCarScreen(carList[page].carId) }),
+                    model = carList[page].carImage,
                     contentDescription = "Player Car",
                     contentScale = ContentScale.FillBounds
                 )
 
             }
 
+            Spacer(modifier = Modifier.width(width = 7.dp))
+
+            Text(
+                text = carList[page].carName,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+
         }
-
-        Spacer(modifier = Modifier.width(width = 7.dp))
-
-
-        Text(
-            text = car.carName,
-            style = MaterialTheme.typography.titleLarge
-        )
-
 
     }
 
@@ -181,15 +279,26 @@ fun PlayerCar(
 
 
 @Composable
-fun PlayerAudioBar() {
+fun PlayerAudioBar(
+    modifier: Modifier = Modifier,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit,
+    audioDuration: Float,
+    colors: SliderColors = SliderDefaults.colors(
+        thumbColor = Color.White,
+        activeTrackColor = Color.White,
+        inactiveTrackColor = Color.White.copy(alpha = 0.21f)
+    )
+) {
 
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp)
-            .clip(shape = RoundedCornerShape(size = 21.dp)),
-        thickness = 7.dp,
-        color = CarizmaWhite
+    Slider(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        valueRange = 0f..audioDuration,
+        colors = colors,
+        onValueChangeFinished = onValueChangeFinished
     )
 
 }
@@ -198,9 +307,8 @@ fun PlayerAudioBar() {
 @Composable
 fun PlayerControls(
     playerScreenViewModel: PlayerScreenViewModel,
-    car: Car,
-    isPlaying: Boolean,
-    togglePlayPause: () -> Unit
+    carList: List<Car>,
+    currentSongIndex: MutableIntState
 ) {
 
     Row(
@@ -223,17 +331,16 @@ fun PlayerControls(
         Image(
             modifier = Modifier
                 .clickable {
-                    togglePlayPause()
-                    if (isPlaying) {
+                    if (playerScreenViewModel.isPlaying.value) {
                         playerScreenViewModel.pauseCarAudio()
-                        !isPlaying
+                    } else if (playerScreenViewModel.player.currentMediaItem == null) {
+                        playerScreenViewModel.playCarAudio(carAudio = carList[currentSongIndex.intValue].carSound)
                     } else {
-                        playerScreenViewModel.playCarAudio(carAudio = car.carSound)
-                        !isPlaying
+                        playerScreenViewModel.resumeCarAudio()
                     }
                 }
                 .size(size = 42.dp),
-            painter = painterResource(id = if (isPlaying) R.drawable.pause else R.drawable.play),
+            painter = painterResource(id = if (playerScreenViewModel.isPlaying.value) R.drawable.pause else R.drawable.play),
             contentDescription = "Play/Pause Button",
             contentScale = ContentScale.Crop
         )

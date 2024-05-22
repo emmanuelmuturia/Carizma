@@ -4,7 +4,7 @@
 kotlinVersion = "1.9.23"
 
 # The Gradle Plugin...
-gradleVersion = "8.2.1"
+gradleVersion = "8.4.1"
 
 # The Compose Compiler...
 composeVersion = "1.5.13"
@@ -134,20 +134,6 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinVersion" }
 koin-test-junit = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinVersion" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-
-[bundles]
-
-# The Android Libraries (Kotlin)...
-android = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx", "androidx-core-splashscreen"]
-
-# The Jetpack Compose Libraries...
-jetpack-compose = ["androidx-activity-compose", "androidx-compose-bom", "androidx-compose-ui-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-ui-tooling", "androidx-compose-ui-test-manifest", "androidx-compose-ui-test-junit4", "androidx-compose-material3", "lifecycle-runtime-compose"]
-
-# The Local Storage Library (Room)...
-room = ["androidx-room-compiler", "androidx-room-runtime", "androidx-room-testing"]
-
-# The Testing Libraries...
-testing = ["junit", "androidx-test-ext-junit", "androidx-test-espresso-core",  "koin-test", "koin-test-junit", "androidx-compose-ui-test-manifest", "androidx-compose-ui-test-junit4", "robolectric", "mockK", "kotlinx-coroutines-test"]
 
 [plugins]
 

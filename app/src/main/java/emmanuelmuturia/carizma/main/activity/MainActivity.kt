@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma.main
+package emmanuelmuturia.carizma.main.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

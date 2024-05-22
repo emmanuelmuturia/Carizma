@@ -7,13 +7,14 @@ import androidx.media3.exoplayer.ExoPlayer
 import emmanuelmuturia.carizma.car.domainlayer.model.Car
 import emmanuelmuturia.carizma.home.domainlayer.repository.HomeRepository
 import emmanuelmuturia.carizma.player.domainlayer.repository.PlayerRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 
-class PlayerRepositoryImplementation (val context: Context, private val homeRepository: HomeRepository) : PlayerRepository {
+class PlayerRepositoryImplementation(
+    private val context: Context,
+    private val homeRepository: HomeRepository
+) : PlayerRepository {
 
-    private val player by lazy { ExoPlayer.Builder(context).build() }
+    override val player by lazy { ExoPlayer.Builder(context).build() }
 
     override suspend fun getCarById(carId: Int): Car? {
         return homeRepository.getCars().first().find { it.carId == carId }
@@ -26,17 +27,20 @@ class PlayerRepositoryImplementation (val context: Context, private val homeRepo
         player.play()
     }
 
+    override suspend fun resumeCarAudio() {
+        player.playWhenReady = true
+    }
+
     override suspend fun pauseCarAudio() {
-        player.pause()
-        player.release()
+        player.playWhenReady = false
     }
 
     override suspend fun rewindCarAudio() {
-        player.seekBack()
+        player.seekTo(player.currentPosition - 1000)
     }
 
     override suspend fun fastForwardCarAudio() {
-        player.seekForward()
+        player.seekTo(player.currentPosition + 1000)
     }
 
 }
