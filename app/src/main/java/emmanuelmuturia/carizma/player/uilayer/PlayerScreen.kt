@@ -1,8 +1,8 @@
 package emmanuelmuturia.carizma.player.uilayer
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -28,10 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,7 +46,6 @@ import emmanuelmuturia.carizma.commons.domainlayer.CarizmaState
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaBackgroundImage
 import emmanuelmuturia.carizma.commons.uilayer.components.CarizmaHeader
 import emmanuelmuturia.carizma.home.uilayer.HomeScreenViewModel
-import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @Composable
@@ -82,11 +77,10 @@ fun PlayerScreen(
 
     val totalDuration = playerScreenViewModel.totalDuration
 
-    val currentSongIndex = rememberSaveable { mutableIntStateOf(value = 0) }
+    val currentSongIndex = playerScreenViewModel.currentSongIndex
 
     LaunchedEffect(key1 = player.currentPosition, key2 = player.isPlaying) {
-        delay(timeMillis = 1000)
-        currentPosition.longValue = player.currentPosition
+        playerScreenViewModel.observePlayerPosition()
     }
 
     LaunchedEffect(key1 = currentPosition.longValue) {
@@ -94,9 +88,7 @@ fun PlayerScreen(
     }
 
     LaunchedEffect(key1 = player.duration) {
-        if (player.duration > 0) {
-            totalDuration.longValue = player.duration
-        }
+        playerScreenViewModel.observePlayerDuration()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -104,97 +96,67 @@ fun PlayerScreen(
         CarizmaBackgroundImage()
 
         carState?.let { car ->
-            PlayerScreenElements(
-                navigateBack = navigateBack,
-                car = car,
-                navigateToCarScreen = { navigateToCarScreen(car.carId) },
-                playerScreenViewModel = playerScreenViewModel,
-                player = player,
-                currentPosition = currentPosition,
-                sliderPosition = sliderPosition,
-                totalDuration = totalDuration,
-                carList = carList,
-                currentSongIndex = currentSongIndex
-            )
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+
+                CarizmaHeader(navigateBack = navigateBack, headerTitle = "Player")
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 7.dp)
+                ) {
+
+                    item {
+                        car.let { car ->
+                            PlayerCarPager(
+                                carList = carList,
+                                navigateToCarScreen = { navigateToCarScreen(car.carId) },
+                                player = player,
+                                currentSongIndex = currentSongIndex,
+                                playerScreenViewModel = playerScreenViewModel
+                            )
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(height = 21.dp))
+                    }
+
+                    item {
+                        PlayerAudioBar(
+                            value = sliderPosition.longValue.toFloat(),
+                            onValueChange = {
+                                sliderPosition.longValue = it.toLong()
+                            },
+                            onValueChangeFinished = {
+                                currentPosition.longValue = sliderPosition.longValue
+                                player.seekTo(sliderPosition.longValue)
+                            },
+                            audioDuration = totalDuration.longValue.toFloat()
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(height = 21.dp))
+                    }
+
+                    item {
+                        PlayerControls(
+                            playerScreenViewModel = playerScreenViewModel,
+                            carList = carList,
+                            currentSongIndex = currentSongIndex
+                        )
+                    }
+
+                }
+
+            }
         }
 
     }
 
-}
-
-@Composable
-private fun PlayerScreenElements(
-    navigateBack: () -> Unit,
-    car: Car?,
-    navigateToCarScreen: (Int) -> Unit,
-    playerScreenViewModel: PlayerScreenViewModel,
-    player: ExoPlayer,
-    currentPosition: MutableState<Long>,
-    sliderPosition: MutableState<Long>,
-    totalDuration: MutableState<Long>,
-    carList: List<Car>,
-    currentSongIndex: MutableIntState
-) {
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        CarizmaHeader(navigateBack = navigateBack, headerTitle = "Player")
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 7.dp)
-        ) {
-
-            item {
-                car?.let { car ->
-                    PlayerCarPager(
-                        carList = carList,
-                        navigateToCarScreen = { navigateToCarScreen(car.carId) },
-                        player = player,
-                        currentSongIndex = currentSongIndex,
-                        playerScreenViewModel = playerScreenViewModel
-                    )
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(height = 21.dp))
-            }
-
-            item {
-                PlayerAudioBar(
-                    value = sliderPosition.value.toFloat(),
-                    onValueChange = {
-                        sliderPosition.value = it.toLong()
-                    },
-                    onValueChangeFinished = {
-                        currentPosition.value = sliderPosition.value
-                        player.seekTo(sliderPosition.value)
-                    },
-                    audioDuration = totalDuration.value.toFloat()
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(height = 21.dp))
-            }
-
-            item {
-                car?.let {
-                    PlayerControls(
-                        playerScreenViewModel = playerScreenViewModel,
-                        carList = carList,
-                        currentSongIndex = currentSongIndex
-                    )
-                }
-            }
-
-        }
-
-    }
 }
 
 
@@ -203,8 +165,8 @@ private fun PlayerScreenElements(
 fun PlayerCarPager(
     carList: List<Car>,
     navigateToCarScreen: (Int) -> Unit,
-    player: ExoPlayer,
     currentSongIndex: MutableIntState,
+    player: ExoPlayer,
     playerScreenViewModel: PlayerScreenViewModel
 ) {
 
@@ -213,17 +175,12 @@ fun PlayerCarPager(
     })
 
     LaunchedEffect(key1 = pagerState.currentPage) {
-        currentSongIndex.intValue = pagerState.currentPage
-        player.seekTo(pagerState.currentPage, 0)
-        playerScreenViewModel.playCarAudio(carAudio = carList[pagerState.currentPage].carSound)
+        playerScreenViewModel.updateCurrentSongIndex(index = pagerState.currentPage)
+        playerScreenViewModel.playCarAudio(carAudio = carList[currentSongIndex.intValue].carSound)
     }
 
     LaunchedEffect(key1 = player.currentMediaItemIndex) {
-        currentSongIndex.intValue = player.currentMediaItemIndex
-        pagerState.animateScrollToPage(
-            page = currentSongIndex.intValue,
-            animationSpec = tween(durationMillis = 500)
-        )
+        playerScreenViewModel.updatePagerState()
     }
 
     HorizontalPager(
@@ -263,13 +220,6 @@ fun PlayerCarPager(
 
             }
 
-            Spacer(modifier = Modifier.width(width = 7.dp))
-
-            Text(
-                text = carList[page].carName,
-                style = MaterialTheme.typography.titleLarge
-            )
-
 
         }
 
@@ -304,6 +254,7 @@ fun PlayerAudioBar(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerControls(
     playerScreenViewModel: PlayerScreenViewModel,
@@ -311,49 +262,63 @@ fun PlayerControls(
     currentSongIndex: MutableIntState
 ) {
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(space = 7.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Image(
+        Row(
             modifier = Modifier
-                .clickable {
-                    playerScreenViewModel.rewindCarAudio()
-                }
-                .size(size = 42.dp),
-            painter = painterResource(id = R.drawable.rewind),
-            contentDescription = "Replay Button",
-            contentScale = ContentScale.Crop
-        )
+                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        Image(
-            modifier = Modifier
-                .clickable {
-                    if (playerScreenViewModel.isPlaying.value) {
-                        playerScreenViewModel.pauseCarAudio()
-                    } else if (playerScreenViewModel.player.currentMediaItem == null) {
-                        playerScreenViewModel.playCarAudio(carAudio = carList[currentSongIndex.intValue].carSound)
-                    } else {
-                        playerScreenViewModel.resumeCarAudio()
+            Image(
+                modifier = Modifier
+                    .clickable {
+                        playerScreenViewModel.rewindCarAudio()
                     }
-                }
-                .size(size = 42.dp),
-            painter = painterResource(id = if (playerScreenViewModel.isPlaying.value) R.drawable.pause else R.drawable.play),
-            contentDescription = "Play/Pause Button",
-            contentScale = ContentScale.Crop
-        )
+                    .size(size = 42.dp),
+                painter = painterResource(id = R.drawable.rewind),
+                contentDescription = "Replay Button",
+                contentScale = ContentScale.Crop
+            )
 
-        Image(
-            modifier = Modifier
-                .clickable {
-                    playerScreenViewModel.fastForwardCarAudio()
-                }
-                .size(size = 42.dp),
-            painter = painterResource(id = R.drawable.forward),
-            contentDescription = "Forward Button",
-            contentScale = ContentScale.Crop
+            Image(
+                modifier = Modifier
+                    .clickable {
+                        if (playerScreenViewModel.isPlaying.value) {
+                            playerScreenViewModel.pauseCarAudio()
+                        } else if (playerScreenViewModel.player.currentMediaItem == null) {
+                            playerScreenViewModel.playCarAudio(carAudio = carList[currentSongIndex.intValue].carSound)
+                        } else {
+                            playerScreenViewModel.resumeCarAudio()
+                        }
+                    }
+                    .size(size = 42.dp),
+                painter = painterResource(id = if (playerScreenViewModel.isPlaying.value) R.drawable.pause else R.drawable.play),
+                contentDescription = "Play/Pause Button",
+                contentScale = ContentScale.Crop
+            )
+
+            Image(
+                modifier = Modifier
+                    .clickable {
+                        playerScreenViewModel.fastForwardCarAudio()
+                    }
+                    .size(size = 42.dp),
+                painter = painterResource(id = R.drawable.forward),
+                contentDescription = "Forward Button",
+                contentScale = ContentScale.Crop
+            )
+
+        }
+
+        Text(
+            modifier = Modifier.basicMarquee(),
+            text = "${carList[currentSongIndex.intValue].carName}${carList[currentSongIndex.intValue].carName}${carList[currentSongIndex.intValue].carName}",
+            style = MaterialTheme.typography.titleLarge
         )
 
     }
