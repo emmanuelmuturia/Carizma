@@ -1,4 +1,4 @@
-package emmanuelmuturia.carizma.commons.uilayer.theme
+package emmanuelmuturia.carizma.main.theme
 
 import android.app.Activity
 import android.os.Build
