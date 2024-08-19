@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">Carizma</string>
-    <string name="good_morning">Good Morning!</string>
-    <string name="good_afternoon">Good Afternoon!</string>
-    <string name="good_evening">Good Evening!</string>
 </resources>

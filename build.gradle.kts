@@ -7,16 +7,7 @@ plugins {
     // The Kotlin Plugin...
     alias(notation = libs.plugins.android.kotlin.plugin) apply false
 
-    // The Security Plugin (AppSweep)...
-    alias(notation = libs.plugins.appsweep) apply false
-
-    // The Compiler Plugin Developer (KSP)...
-    alias(notation = libs.plugins.ksp) apply false
-
-    // The Google Plugins...
-    alias(notation = libs.plugins.gms.google.services) apply false
-    alias(notation = libs.plugins.firebase.crashlytics) apply false
-    alias(notation = libs.plugins.secrets.gradle.plugin) apply false
-    alias(notation = libs.plugins.firebase.performance) apply false
+    // The Compose Compiler Gradle Plugin...
+    alias(notation = libs.plugins.compose.compiler) apply false
 
 }
