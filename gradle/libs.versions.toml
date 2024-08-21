@@ -13,7 +13,7 @@ androidxSplashScreenVersion = "1.0.1"
 
 # The Jetpack Compose Libraries...
 androidxActivityCompose = "1.9.1"
-androidxComposeBom = "2024.06.00"
+androidxComposeBom = "2024.08.00"
 lifecycleRuntimeComposeVersion = "2.8.4"
 
 # The Testing Libraries...
